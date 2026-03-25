@@ -44,7 +44,7 @@ class StorageTests {
       if (val != 'DEFAULT') throw Exception('Default value failed');
 
       // Simulate a "corrupt" read (getting null where we expect something)
-      final dynamic corruptVal = null;
+      const dynamic corruptVal = null;
       final fallback = corruptVal ?? 'RECOVERED';
       if (fallback != 'RECOVERED') throw Exception('Recovery logic failed');
 

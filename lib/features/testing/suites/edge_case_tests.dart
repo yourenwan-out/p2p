@@ -1,8 +1,6 @@
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import '../models/test_result.dart';
 import '../../game_board/providers/game_provider.dart';
-import '../../../core/network/socket_host.dart';
-import '../../../core/network/socket_client.dart';
 
 class EdgeCaseTests {
   static Future<List<TestResult>> run() async {
