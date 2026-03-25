@@ -44,17 +44,17 @@ class SocketClient {
   void _sendMessage(SocketMessage message) {
     if (_socket != null) {
       final json = jsonEncode(message.toJson());
-      _socket!.write(json);
+      _socket!.write('$json\n');
       _logger.i('Sent message: ${message.type}');
     }
   }
 
   /// Listens for incoming messages from the host
   void _listenForMessages() {
-    _socket?.listen(
-      (data) {
+    _socket?.cast<List<int>>().transform(utf8.decoder).transform(const LineSplitter()).listen(
+      (message) {
         try {
-          final message = utf8.decode(data);
+          if (message.isEmpty) return;
           final json = jsonDecode(message) as Map<String, dynamic>;
           final socketMessage = SocketMessage.fromJson(json);
           _logger.i('Received message: ${socketMessage.type}');

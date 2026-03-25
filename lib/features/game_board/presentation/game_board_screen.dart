@@ -57,17 +57,29 @@ class _GameBoardScreenState extends ConsumerState<GameBoardScreen> {
     final int redLeft = 9 - gameState.cards.where((c) => c.color == CardColor.red && c.isRevealed).length;
     final int blueLeft = 8 - gameState.cards.where((c) => c.color == CardColor.blue && c.isRevealed).length;
 
-    return Scaffold(
-      appBar: AppBar(
-        title: Text(
-          localPlayer != null 
-              ? 'الأسماء السرية - ${localPlayer.team == Team.red ? "الفريق الأحمر" : "الفريق الأزرق"}'
-              : 'الأسماء السرية',
-          style: TextStyle(fontSize: 18.sp),
+    return WillPopScope(
+      onWillPop: () async {
+        ref.read(connectionProvider.notifier).disconnect();
+        return true;
+      },
+      child: Scaffold(
+        appBar: AppBar(
+          title: Text(
+            localPlayer != null 
+                ? 'الأسماء السرية - ${localPlayer.team == Team.red ? "الفريق الأحمر" : "الفريق الأزرق"}'
+                : 'الأسماء السرية',
+            style: TextStyle(fontSize: 18.sp),
+          ),
+          centerTitle: true,
+          leading: IconButton(
+            icon: const Icon(Icons.arrow_back),
+            onPressed: () {
+              ref.read(connectionProvider.notifier).disconnect();
+              Navigator.of(context).pop();
+            },
+          ),
         ),
-        centerTitle: true,
-      ),
-      body: SafeArea(
+        body: SafeArea(
         child: Column(
           children: [
             // Score Board

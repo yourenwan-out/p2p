@@ -48,15 +48,20 @@ class _LobbyScreenState extends ConsumerState<LobbyScreen> {
       return;
     }
 
-    // TODO: Send START_GAME message to all clients so they also navigate
-    Navigator.pushReplacement(
-      context,
-      MaterialPageRoute(builder: (context) => const GameBoardScreen()),
-    );
+    ref.read(connectionProvider.notifier).startGame();
   }
 
   @override
   Widget build(BuildContext context) {
+    ref.listen<ConnectionState>(connectionProvider, (previous, next) {
+      if (next.isGameStarted && previous?.isGameStarted != true) {
+        Navigator.pushReplacement(
+          context,
+          MaterialPageRoute(builder: (context) => const GameBoardScreen()),
+        );
+      }
+    });
+
     final connectionState = ref.watch(connectionProvider);
     
     Player? localPlayer;
@@ -71,12 +76,24 @@ class _LobbyScreenState extends ConsumerState<LobbyScreen> {
     final redTeam = connectionState.players.where((p) => p.team == Team.red).toList();
     final blueTeam = connectionState.players.where((p) => p.team == Team.blue).toList();
 
-    return Scaffold(
-      appBar: AppBar(
-        title: Text('غرفة الانتظار', style: TextStyle(fontSize: 20.sp)),
-        centerTitle: true,
-      ),
-      body: Padding(
+    return WillPopScope(
+      onWillPop: () async {
+        ref.read(connectionProvider.notifier).disconnect();
+        return true;
+      },
+      child: Scaffold(
+        appBar: AppBar(
+          title: Text('غرفة الانتظار', style: TextStyle(fontSize: 20.sp)),
+          centerTitle: true,
+          leading: IconButton(
+            icon: const Icon(Icons.arrow_back),
+            onPressed: () {
+              ref.read(connectionProvider.notifier).disconnect();
+              Navigator.of(context).pop();
+            },
+          ),
+        ),
+        body: Padding(
         padding: EdgeInsets.symmetric(horizontal: 16.w, vertical: 16.h),
         child: Column(
           crossAxisAlignment: CrossAxisAlignment.stretch,

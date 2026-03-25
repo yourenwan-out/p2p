@@ -46,10 +46,10 @@ class SocketHost {
   }
 
   void _handleClient(Socket client) {
-    client.listen(
-      (data) {
+    client.cast<List<int>>().transform(utf8.decoder).transform(const LineSplitter()).listen(
+      (message) {
         try {
-          final message = utf8.decode(data);
+          if (message.isEmpty) return;
           final json = jsonDecode(message) as Map<String, dynamic>;
           final socketMessage = SocketMessage.fromJson(json);
           _logger.i('Received message: ${socketMessage.type}');
@@ -106,17 +106,26 @@ class SocketHost {
           _logger.e('Error parsing message: $e');
         }
       },
-      onDone: () {
-        _logger.i('Client disconnected');
-        _clients.remove(client);
-        _clientSockets.removeWhere((key, value) => value == client);
-      },
       onError: (error) {
         _logger.e('Client error: $error');
-        _clients.remove(client);
-        _clientSockets.removeWhere((key, value) => value == client);
+        _handleDisconnect(client);
       },
     );
+  }
+
+  void _handleDisconnect(Socket client) {
+    _clients.remove(client);
+    String? disconnectedId;
+    _clientSockets.forEach((key, value) {
+      if (value == client) disconnectedId = key;
+    });
+
+    if (disconnectedId != null) {
+      _players.removeWhere((p) => p.id == disconnectedId);
+      _clientSockets.remove(disconnectedId);
+      _broadcastLobbyUpdate();
+      _logger.i('Player $disconnectedId disconnected, removed from lobby');
+    }
   }
 
   void _broadcastLobbyUpdate() {
@@ -124,7 +133,7 @@ class SocketHost {
       type: 'LOBBY_UPDATE',
       payload: {'players': _players.map((p) => p.toJson()).toList()},
     );
-    _broadcastMessage(message);
+    broadcastMessage(message);
     onMessageReceived?.call(message);
   }
 
@@ -154,13 +163,13 @@ class SocketHost {
       type: 'STATE_UPDATE',
       payload: playerState.toJson(),
     );
-    socket.write(jsonEncode(message.toJson()));
+    socket.write('${jsonEncode(message.toJson())}\n');
   }
 
-  void _broadcastMessage(SocketMessage message) {
+  void broadcastMessage(SocketMessage message) {
     final json = jsonEncode(message.toJson());
     for (final client in _clients) {
-      client.write(json);
+      client.write('$json\n');
     }
     _logger.i('Broadcasted message: ${message.type}');
   }

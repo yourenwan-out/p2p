@@ -14,6 +14,7 @@ class ConnectionState {
   final List<Player> players;
   final String? localPlayerId;
   final bool isHost;
+  final bool isGameStarted;
   final SocketHost? socketHost;
   final SocketClient? socketClient;
 
@@ -24,6 +25,7 @@ class ConnectionState {
     this.players = const [],
     this.localPlayerId,
     this.isHost = false,
+    this.isGameStarted = false,
     this.socketHost,
     this.socketClient,
   });
@@ -35,6 +37,7 @@ class ConnectionState {
     List<Player>? players,
     String? localPlayerId,
     bool? isHost,
+    bool? isGameStarted,
     SocketHost? socketHost,
     SocketClient? socketClient,
   }) {
@@ -45,6 +48,7 @@ class ConnectionState {
       players: players ?? this.players,
       localPlayerId: localPlayerId ?? this.localPlayerId,
       isHost: isHost ?? this.isHost,
+      isGameStarted: isGameStarted ?? this.isGameStarted,
       socketHost: socketHost ?? this.socketHost,
       socketClient: socketClient ?? this.socketClient,
     );
@@ -58,6 +62,7 @@ class ConnectionNotifier extends StateNotifier<ConnectionState> {
   ConnectionNotifier(this.ref) : super(const ConnectionState());
 
   Future<void> startHosting(String playerName) async {
+    disconnect(); // Ensure previous connections are killed
     state = state.copyWith(isConnecting: true, error: null);
     try {
       final localId = 'host_${DateTime.now().millisecondsSinceEpoch}';
@@ -81,6 +86,7 @@ class ConnectionNotifier extends StateNotifier<ConnectionState> {
   }
 
   Future<void> joinGame(String ip, String playerName) async {
+    disconnect(); // Ensure previous connections are killed
     state = state.copyWith(isConnecting: true, error: null);
     try {
       final localId = 'player_${DateTime.now().millisecondsSinceEpoch}';
@@ -134,6 +140,8 @@ class ConnectionNotifier extends StateNotifier<ConnectionState> {
       if (!state.isHost) {
         ref.read(gameProvider.notifier).updateState(GameState.fromJson(message.payload));
       }
+    } else if (message.type == 'START_GAME') {
+      state = state.copyWith(isGameStarted: true);
     } else if (state.isHost) {
       // Host processing game Actions
       if (message.type == 'CARD_FLIP') {
@@ -200,6 +208,14 @@ class ConnectionNotifier extends StateNotifier<ConnectionState> {
       _handleMessage(message);
     } else {
       state.socketClient?.sendMessage(message);
+    }
+  }
+
+  void startGame() {
+    if (state.isHost) {
+      const message = SocketMessage(type: 'START_GAME', payload: {});
+      _handleMessage(message);
+      state.socketHost?.broadcastMessage(message);
     }
   }
 }
