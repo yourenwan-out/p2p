@@ -66,17 +66,19 @@ class ConnectionNotifier extends StateNotifier<ConnectionState> {
     state = state.copyWith(isConnecting: true, error: null);
     try {
       final localId = 'host_${DateTime.now().millisecondsSinceEpoch}';
-      final socketHost = SocketHost(
+      state = state.copyWith(localPlayerId: localId);
+
+      final host = SocketHost(
         onMessageReceived: _handleMessage,
         getGameState: () => ref.read(gameProvider),
       );
-      await socketHost.startServer(playerName);
+      await host.startServer(playerName, localId);
       state = state.copyWith(
         isConnected: true,
         isConnecting: false,
         localPlayerId: localId,
         isHost: true,
-        socketHost: socketHost,
+        socketHost: host,
       );
       _logger.i('Hosting started successfully');
     } catch (e) {

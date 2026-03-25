@@ -18,14 +18,14 @@ class SocketHost {
 
   SocketHost({this.onMessageReceived, this.getGameState});
 
-  Future<void> startServer(String hostName) async {
+  Future<void> startServer(String hostName, String hostId) async {
     try {
       _serverSocket = await ServerSocket.bind(InternetAddress.anyIPv4, port, shared: true);
       _logger.i('Server started on port $port');
 
       _players = [
         Player(
-          id: 'host_${DateTime.now().millisecondsSinceEpoch}',
+          id: hostId,
           name: hostName,
           team: Team.red,
           role: Role.spymaster,

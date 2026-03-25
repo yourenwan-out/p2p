@@ -17,10 +17,10 @@ class NetworkTests {
     final startTime = DateTime.now();
     final host = SocketHost();
     try {
-      await host.startServer('TestHost');
+      await host.startServer('TestHost', 'test_host_id');
       host.stopServer();
       
-      await host.startServer('TestHost');
+      await host.startServer('TestHost', 'test_host_id');
       host.stopServer();
 
       return TestResult(
@@ -39,7 +39,7 @@ class NetworkTests {
     final host = SocketHost();
     final client = SocketClient(onMessageReceived: (_) {}, localPlayerId: 'test_client_id');
     try {
-      await host.startServer('TestHost');
+      await host.startServer('TestHost', 'test_host_id');
       await client.connect('127.0.0.1', 'TestPlayer');
       client.disconnect();
       host.stopServer();
@@ -87,7 +87,7 @@ class NetworkTests {
     final client1 = SocketClient(onMessageReceived: (_) {}, localPlayerId: 'client_1');
     final client2 = SocketClient(onMessageReceived: (_) {}, localPlayerId: 'client_2');
     try {
-      await host.startServer('Host');
+      await host.startServer('Host', 'test_host_id');
       await client1.connect('127.0.0.1', 'Player 1');
       await Future.delayed(const Duration(milliseconds: 100)); // allow TCP
       await client2.connect('127.0.0.1', 'Player 2');

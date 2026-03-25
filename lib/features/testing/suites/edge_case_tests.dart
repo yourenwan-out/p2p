@@ -16,17 +16,21 @@ class EdgeCaseTests {
       final container = ProviderContainer();
       final notifier = container.read(gameProvider.notifier);
       
+      var state = container.read(gameProvider);
+      final expectedColor = state.currentTurn == Team.red ? CardColor.red : CardColor.blue;
+      int safeCardIdx = state.cards.indexWhere((c) => c.color == expectedColor);
+
       // Setup rule: give 99 guesses
       notifier.giveClue('RAPID', 99);
       
       // Simulate 10 rapid clicks on the exact same card
       for (int i = 0; i < 10; i++) {
-        notifier.revealCard(10);
+        notifier.revealCard(safeCardIdx);
       }
       
-      final state = container.read(gameProvider);
+      state = container.read(gameProvider);
       // The logic handles "if already revealed return", meaning remainingGuesses only dropped by 1.
-      if (!state.cards[10].isRevealed) throw Exception('Card not revealed');
+      if (!state.cards[safeCardIdx].isRevealed) throw Exception('Card not revealed');
       if (state.remainingGuesses != 99) throw Exception('Remaining guesses decremented multiple times for same card! ${state.remainingGuesses}');
 
       return TestResult(name: 'Edge Cases: Rapid Clicking', status: TestStatus.passed, duration: DateTime.now().difference(startTime));
