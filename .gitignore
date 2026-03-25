@@ -48,6 +48,9 @@ unlinked_spec.ds
 
 # Android related
 **/android/**/gradle-wrapper.jar
+
+# Hive database files
+*.hive
 .gradle/
 **/android/captures/
 **/android/gradlew
@@ -55,6 +58,13 @@ unlinked_spec.ds
 **/android/local.properties
 **/android/**/GeneratedPluginRegistrant.java
 **/android/key.properties
+
+# Generated files
+*.g.dart
+*.freezed.dart
+
+# تجاهل مجلد Flutter SDK الذي تم تحميله محلياً
+flutter/
 *.jks
 
 # iOS/XCode related
