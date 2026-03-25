@@ -1,6 +1,8 @@
 import 'package:freezed_annotation/freezed_annotation.dart';
 import 'word_card.dart';
 
+import 'player.dart';
+
 part 'game_state.freezed.dart';
 part 'game_state.g.dart';
 
@@ -14,8 +16,12 @@ enum Team {
 @freezed
 class GameState with _$GameState {
   const factory GameState({
+    @Default([]) List<Player> players,
     required List<WordCard> cards,
     required Team currentTurn,
+    String? currentClueWord,
+    int? currentClueNumber,
+    @Default(0) int remainingGuesses,
     @Default(false) bool isGameOver,
     Team? winner,
   }) = _GameState;
