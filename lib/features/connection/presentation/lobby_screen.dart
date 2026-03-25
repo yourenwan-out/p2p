@@ -76,6 +76,7 @@ class _LobbyScreenState extends ConsumerState<LobbyScreen> {
     final redTeam = connectionState.players.where((p) => p.team == Team.red).toList();
     final blueTeam = connectionState.players.where((p) => p.team == Team.blue).toList();
 
+    // ignore: deprecated_member_use
     return WillPopScope(
       onWillPop: () async {
         ref.read(connectionProvider.notifier).disconnect();
@@ -232,6 +233,6 @@ class _LobbyScreenState extends ConsumerState<LobbyScreen> {
           ],
         ),
       ),
-    );
+    ));
   }
 }

@@ -57,6 +57,7 @@ class _GameBoardScreenState extends ConsumerState<GameBoardScreen> {
     final int redLeft = 9 - gameState.cards.where((c) => c.color == CardColor.red && c.isRevealed).length;
     final int blueLeft = 8 - gameState.cards.where((c) => c.color == CardColor.blue && c.isRevealed).length;
 
+    // ignore: deprecated_member_use
     return WillPopScope(
       onWillPop: () async {
         ref.read(connectionProvider.notifier).disconnect();
@@ -196,7 +197,7 @@ class _GameBoardScreenState extends ConsumerState<GameBoardScreen> {
           ],
         ),
       ),
-    );
+    ));
   }
 
   Widget _buildControls(Player localPlayer, GameState gameState, ConnectionNotifier notifier) {

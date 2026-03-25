@@ -79,11 +79,10 @@ class NetworkTests {
 
   static Future<TestResult> _testMultipleClientsAndDisconnect() async {
     final startTime = DateTime.now();
-    final host = SocketHost();
     int hostLobbyUpdates = 0;
-    host.onMessageReceived = (msg) {
+    final host = SocketHost(onMessageReceived: (msg) {
       if (msg.type == 'LOBBY_UPDATE') hostLobbyUpdates++;
-    };
+    });
 
     final client1 = SocketClient(onMessageReceived: (_) {}, localPlayerId: 'client_1');
     final client2 = SocketClient(onMessageReceived: (_) {}, localPlayerId: 'client_2');
