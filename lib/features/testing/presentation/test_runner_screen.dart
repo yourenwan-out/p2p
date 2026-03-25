@@ -2,6 +2,12 @@ import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
 import '../models/test_result.dart';
+import '../suites/engine_tests.dart';
+import '../suites/network_tests.dart';
+import '../suites/validator_tests.dart';
+import '../suites/storage_tests.dart';
+import '../suites/edge_case_tests.dart';
+import '../suites/state_tests.dart';
 
 class TestRunnerScreen extends ConsumerStatefulWidget {
   const TestRunnerScreen({super.key});
@@ -31,18 +37,28 @@ class _TestRunnerScreenState extends ConsumerState<TestRunnerScreen> {
         TestResult(name: 'Network: Host Lifecycle'),
         TestResult(name: 'Network: Client Lifecycle'),
         TestResult(name: 'Network: Serialization'),
-        TestResult(name: 'Network: Message Types'),
-        TestResult(name: 'State: Connection transitions'),
-        TestResult(name: 'State: Game state updates'),
         TestResult(name: 'Validators: IP Validator'),
         TestResult(name: 'Validators: Name Validator'),
         TestResult(name: 'Storage: Hive Save/Load'),
         TestResult(name: 'Storage: Error Recovery'),
+        TestResult(name: 'State: Connection transitions'),
+        TestResult(name: 'State: Game state updates'),
         TestResult(name: 'Edge Cases: Rapid Clicking'),
         TestResult(name: 'Edge Cases: Rogue Client'),
-        TestResult(name: 'Edge Cases: Late Joiner'),
-        TestResult(name: 'Edge Cases: Host Drops'),
       ];
+    });
+  }
+
+  Future<void> _updateResult(String name, TestStatus status, {String? error, Duration? duration}) async {
+    setState(() {
+      final index = _results.indexWhere((r) => r.name == name);
+      if (index != -1) {
+        _results[index] = _results[index].copyWith(
+          status: status,
+          errorMessage: error,
+          duration: duration,
+        );
+      }
     });
   }
 
@@ -54,7 +70,25 @@ class _TestRunnerScreenState extends ConsumerState<TestRunnerScreen> {
       _initializeTests();
     });
 
-    // TODO: Actually run the tests here
+    final suites = [
+      () => EngineTests.run(),
+      () => NetworkTests.run(),
+      () => ValidatorTests.run(),
+      () => StorageTests.run(),
+      () => StateTests.run(),
+      () => EdgeCaseTests.run(),
+    ];
+
+    for (var suiteFn in suites) {
+      try {
+        final results = await suiteFn();
+        for (var res in results) {
+          await _updateResult(res.name, res.status, error: res.errorMessage, duration: res.duration);
+        }
+      } catch (e) {
+        debugPrint('Suite failed: $e');
+      }
+    }
     
     setState(() {
       _isRunning = false;
