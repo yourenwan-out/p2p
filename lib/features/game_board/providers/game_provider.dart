@@ -3,13 +3,7 @@ import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:logger/logger.dart';
 import '../models/game_state.dart';
 import '../models/word_card.dart';
-
-/// Sample word list (in a real app, load from assets or database)
-const List<String> sampleWords = [
-  'Apple', 'Banana', 'Car', 'Dog', 'Elephant', 'Flower', 'Guitar', 'House', 'Ice', 'Jungle',
-  'King', 'Lion', 'Mountain', 'Night', 'Ocean', 'Piano', 'Queen', 'River', 'Sun', 'Tree',
-  'Umbrella', 'Violin', 'Water', 'Xylophone', 'Yacht', 'Zebra'
-];
+import '../../core/constants/word_database.dart';
 
 /// Notifier for managing game state
 class GameNotifier extends StateNotifier<GameState> {
@@ -17,12 +11,16 @@ class GameNotifier extends StateNotifier<GameState> {
 
   GameNotifier() : super(_generateInitialState());
 
-  /// Generates initial game state with random words and colors
+  /// Synchronize state from network
+  void updateState(GameState newState) {
+    state = newState;
+  }
+
+  /// Generates initial game state
   static GameState _generateInitialState() {
     final random = Random();
-    final shuffledWords = sampleWords.toList()..shuffle(random);
+    final shuffledWords = WordDatabase.arabicWords.toList()..shuffle(random);
 
-    // Color distribution: 9 red, 8 blue, 7 neutral, 1 assassin
     final colors = <CardColor>[];
     colors.addAll(List.filled(9, CardColor.red));
     colors.addAll(List.filled(8, CardColor.blue));
@@ -38,8 +36,39 @@ class GameNotifier extends StateNotifier<GameState> {
 
     return GameState(
       cards: cards,
-      currentTurn: Team.red, // Red starts first
+      currentTurn: Team.red,
     );
+  }
+
+  /// Spymaster gives a clue
+  void giveClue(String word, int number) {
+    if (state.isGameOver) return;
+    
+    // Number + 1 guesses allowed (if number is not 0 or unlimited. Let's use 99 for unlimited, 0 for 0+1=1)
+    int guesses = number == 99 ? 99 : (number + 1);
+    
+    state = state.copyWith(
+      currentClueWord: word,
+      currentClueNumber: number,
+      remainingGuesses: guesses,
+    );
+    _logger.i('Clue given: $word : $number. Guesses allowed: $guesses');
+  }
+
+  /// Operative voluntarily passes the turn
+  void passTurn() {
+    if (state.isGameOver) return;
+    _switchTurn();
+  }
+
+  void _switchTurn() {
+    state = state.copyWith(
+      currentTurn: state.currentTurn == Team.red ? Team.blue : Team.red,
+      currentClueWord: null,
+      currentClueNumber: null,
+      remainingGuesses: 0,
+    );
+    _logger.i('Turn switched to: ${state.currentTurn.name}');
   }
 
   /// Reveals a card at the given index
@@ -47,6 +76,12 @@ class GameNotifier extends StateNotifier<GameState> {
     if (index < 0) throw Exception('Should throw error on negative index');
     if (index > 24) throw Exception('Should throw error on index > 24');
     if (state.isGameOver) return;
+    
+    // Check if they are allowed to guess
+    if (state.remainingGuesses <= 0) {
+      _logger.w('Cannot reveal card: No guesses remaining or no clue given yet.');
+      return; 
+    }
 
     final card = state.cards[index];
     if (card.isRevealed) return;
@@ -56,14 +91,13 @@ class GameNotifier extends StateNotifier<GameState> {
 
     Team? winner;
     bool isGameOver = false;
+    bool endTurn = false;
 
     if (card.color == CardColor.assassin) {
-      // TC-03: Assassin revealed, game over
       isGameOver = true;
       winner = state.currentTurn == Team.red ? Team.blue : Team.red;
-      _logger.i('Assassin revealed! ${winner.name} wins');
+      _logger.i('Assassin revealed! ${winner!.name} wins');
     } else {
-      // Check win conditions
       final redCards = updatedCards.where((c) => c.color == CardColor.red && c.isRevealed).length;
       final blueCards = updatedCards.where((c) => c.color == CardColor.blue && c.isRevealed).length;
 
@@ -74,8 +108,16 @@ class GameNotifier extends StateNotifier<GameState> {
         isGameOver = true;
         winner = Team.blue;
       } else if (card.color != state.currentTurn.cardColor) {
-        // Wrong color, switch turn
-        state = state.copyWith(currentTurn: state.currentTurn == Team.red ? Team.blue : Team.red);
+        // Wrong color (neutral or enemy), end turn immediately
+        endTurn = true;
+      } else {
+        // Correct color! Decrement guesses
+        if (state.remainingGuesses != 99) { // 99 means unlimited
+          state = state.copyWith(remainingGuesses: state.remainingGuesses - 1);
+          if (state.remainingGuesses == 0) {
+            endTurn = true;
+          }
+        }
       }
     }
 
@@ -85,7 +127,11 @@ class GameNotifier extends StateNotifier<GameState> {
       winner: winner,
     );
 
-    _logger.i('Card revealed: ${card.word} (${card.color.name}), Turn: ${state.currentTurn.name}');
+    _logger.i('Card revealed: ${card.word} (${card.color.name})');
+
+    if (endTurn && !isGameOver) {
+      _switchTurn();
+    }
   }
 
   /// Resets the game

@@ -4,8 +4,9 @@ import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:p2p_codenames/core/network/connection_provider.dart';
 import 'package:p2p_codenames/core/network/ip_utils.dart';
 import 'package:p2p_codenames/features/game_board/presentation/game_board_screen.dart';
+import 'package:p2p_codenames/features/game_board/models/player.dart';
+import 'package:p2p_codenames/features/game_board/models/game_state.dart';
 
-/// Lobby screen showing connected players
 class LobbyScreen extends ConsumerStatefulWidget {
   const LobbyScreen({super.key});
 
@@ -29,70 +30,187 @@ class _LobbyScreenState extends ConsumerState<LobbyScreen> {
     });
   }
 
+  void _handleStartGame(ConnectionState state) {
+    if (state.players.length < 4) {
+      ScaffoldMessenger.of(context).showSnackBar(
+        const SnackBar(content: Text('يجب أن يكون هناك 4 لاعبين على الأقل لبدء اللعبة')),
+      );
+      return;
+    }
+    
+    final hasRedSpymaster = state.players.any((p) => p.team == Team.red && p.role == Role.spymaster);
+    final hasBlueSpymaster = state.players.any((p) => p.team == Team.blue && p.role == Role.spymaster);
+
+    if (!hasRedSpymaster || !hasBlueSpymaster) {
+      ScaffoldMessenger.of(context).showSnackBar(
+        const SnackBar(content: Text('يجب أن يكون لكل فريق رئيس شبكة واحد على الأقل')),
+      );
+      return;
+    }
+
+    // TODO: Send START_GAME message to all clients so they also navigate
+    Navigator.pushReplacement(
+      context,
+      MaterialPageRoute(builder: (context) => const GameBoardScreen()),
+    );
+  }
+
   @override
   Widget build(BuildContext context) {
     final connectionState = ref.watch(connectionProvider);
+    
+    Player? localPlayer;
+    if (connectionState.localPlayerId != null) {
+      try {
+        localPlayer = connectionState.players.firstWhere((p) => p.id == connectionState.localPlayerId);
+      } catch (e) {
+        // Not found yet
+      }
+    }
+
+    final redTeam = connectionState.players.where((p) => p.team == Team.red).toList();
+    final blueTeam = connectionState.players.where((p) => p.team == Team.blue).toList();
 
     return Scaffold(
       appBar: AppBar(
-        title: Text(
-          'Game Lobby',
-          style: TextStyle(fontSize: 20.sp),
-        ),
+        title: Text('غرفة الانتظار', style: TextStyle(fontSize: 20.sp)),
         centerTitle: true,
       ),
       body: Padding(
-        padding: EdgeInsets.symmetric(horizontal: 24.w, vertical: 32.h),
+        padding: EdgeInsets.symmetric(horizontal: 16.w, vertical: 16.h),
         child: Column(
+          crossAxisAlignment: CrossAxisAlignment.stretch,
           children: [
             if (_hostIP != null)
               Text(
-                'Host IP: $_hostIP',
+                'رقم غرفتك (IP): $_hostIP',
                 style: TextStyle(
-                  fontSize: 18.sp,
+                  fontSize: 16.sp,
                   fontWeight: FontWeight.bold,
+                  color: Colors.blueAccent,
+                ),
+                textAlign: TextAlign.center,
+              ),
+            SizedBox(height: 16.h),
+            
+            // Local Player Setup
+            if (localPlayer != null)
+              Card(
+                color: Colors.grey.shade100,
+                child: Padding(
+                  padding: EdgeInsets.all(12.w),
+                  child: Column(
+                    children: [
+                      Text('إعداداتك', style: TextStyle(fontWeight: FontWeight.bold, fontSize: 16.sp)),
+                      Row(
+                        mainAxisAlignment: MainAxisAlignment.spaceEvenly,
+                        children: [
+                          DropdownButton<Team>(
+                            value: localPlayer.team,
+                            onChanged: (Team? newTeam) {
+                              if (newTeam != null) {
+                                ref.read(connectionProvider.notifier).updateLocalPlayer(newTeam, localPlayer!.role);
+                              }
+                            },
+                            items: const [
+                              DropdownMenuItem(value: Team.red, child: Text('الفريق الأحمر')),
+                              DropdownMenuItem(value: Team.blue, child: Text('الفريق الأزرق')),
+                            ],
+                          ),
+                          DropdownButton<Role>(
+                            value: localPlayer.role,
+                            onChanged: (Role? newRole) {
+                              if (newRole != null) {
+                                ref.read(connectionProvider.notifier).updateLocalPlayer(localPlayer!.team, newRole);
+                              }
+                            },
+                            items: const [
+                              DropdownMenuItem(value: Role.operative, child: Text('عميل ميداني')),
+                              DropdownMenuItem(value: Role.spymaster, child: Text('رئيس شبكة 🔍')),
+                            ],
+                          ),
+                        ],
+                      ),
+                    ],
+                  ),
                 ),
               ),
-            SizedBox(height: 32.h),
-            Text(
-              'Connected Players:',
-              style: TextStyle(
-                fontSize: 20.sp,
-                fontWeight: FontWeight.bold,
-              ),
-            ),
+            
             SizedBox(height: 16.h),
             Expanded(
-              child: ListView.builder(
-                itemCount: connectionState.players.length,
-                itemBuilder: (context, index) {
-                  return Card(
-                    margin: EdgeInsets.symmetric(vertical: 8.h),
-                    child: Padding(
-                      padding: EdgeInsets.all(16.w),
-                      child: Text(
-                        connectionState.players[index],
-                        style: TextStyle(fontSize: 16.sp),
-                      ),
+              child: Row(
+                crossAxisAlignment: CrossAxisAlignment.start,
+                children: [
+                  // Red Team List
+                  Expanded(
+                    child: Column(
+                      children: [
+                        Text('الفريق الأحمر', style: TextStyle(color: Colors.red, fontWeight: FontWeight.bold, fontSize: 18.sp)),
+                        Expanded(
+                          child: ListView.builder(
+                            itemCount: redTeam.length,
+                            itemBuilder: (context, index) {
+                              final p = redTeam[index];
+                              return ListTile(
+                                title: Text(p.name, style: TextStyle(fontSize: 14.sp)),
+                                subtitle: Text(p.role == Role.spymaster ? 'رئيس شبكة 🔍' : 'عميل ميداني', style: TextStyle(fontSize: 12.sp, color: Colors.grey)),
+                                dense: true,
+                              );
+                            },
+                          ),
+                        ),
+                      ],
                     ),
-                  );
-                },
+                  ),
+                  Container(width: 1, color: Colors.grey.shade300),
+                  // Blue Team List
+                  Expanded(
+                    child: Column(
+                      children: [
+                        Text('الفريق الأزرق', style: TextStyle(color: Colors.blue, fontWeight: FontWeight.bold, fontSize: 18.sp)),
+                        Expanded(
+                          child: ListView.builder(
+                            itemCount: blueTeam.length,
+                            itemBuilder: (context, index) {
+                              final p = blueTeam[index];
+                              return ListTile(
+                                title: Text(p.name, style: TextStyle(fontSize: 14.sp)),
+                                subtitle: Text(p.role == Role.spymaster ? 'رئيس شبكة 🔍' : 'عميل ميداني', style: TextStyle(fontSize: 12.sp, color: Colors.grey)),
+                                dense: true,
+                              );
+                            },
+                          ),
+                        ),
+                      ],
+                    ),
+                  ),
+                ],
               ),
             ),
+            
             if (connectionState.isHost)
-              ElevatedButton(
-                onPressed: () {
-                  Navigator.push(
-                    context,
-                    MaterialPageRoute(builder: (context) => const GameBoardScreen()),
-                  );
-                },
-                child: const Text('Start Game'),
+              Padding(
+                padding: EdgeInsets.only(top: 16.h),
+                child: ElevatedButton(
+                  onPressed: () => _handleStartGame(connectionState),
+                  style: ElevatedButton.styleFrom(
+                    minimumSize: Size(double.infinity, 50.h),
+                    textStyle: TextStyle(fontSize: 18.sp),
+                    backgroundColor: Colors.green,
+                  ),
+                  child: const Text('بدء اللعبة'),
+                ),
+              )
+            else
+              Padding(
+                padding: EdgeInsets.only(top: 16.h),
+                child: Center(child: Text('بانتظار المضيف لبدء اللعبة...', style: TextStyle(fontSize: 16.sp, color: Colors.grey))),
               ),
+              
             if (connectionState.error != null)
-              Text(
-                'Error: ${connectionState.error}',
-                style: TextStyle(color: Colors.red, fontSize: 16.sp),
+              Padding(
+                padding: EdgeInsets.only(top: 8.h),
+                child: Text('خطأ: ${connectionState.error}', style: TextStyle(color: Colors.red, fontSize: 14.sp), textAlign: TextAlign.center),
               ),
           ],
         ),

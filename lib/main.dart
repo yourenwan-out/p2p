@@ -26,10 +26,17 @@ class MyApp extends StatelessWidget {
       splitScreenMode: true,
       builder: (context, child) {
         return MaterialApp(
-          title: 'P2P Codenames',
+          title: 'الأسماء السرية',
+          debugShowCheckedModeBanner: false,
           theme: ThemeData(
             primarySwatch: Colors.blue,
           ),
+          builder: (context, childWidget) {
+            return Directionality(
+              textDirection: TextDirection.rtl,
+              child: childWidget!,
+            );
+          },
           home: const StartScreen(),
         );
       },

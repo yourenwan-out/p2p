@@ -7,6 +7,10 @@ import 'models/socket_message.dart';
 class SocketClient {
   Socket? _socket;
   final Logger _logger = Logger();
+  final Function(SocketMessage) onMessageReceived;
+  final String localPlayerId;
+
+  SocketClient({required this.onMessageReceived, required this.localPlayerId});
 
   /// Connects to the host at the given IP
   Future<void> connect(String ip, String playerName) async {
@@ -17,7 +21,12 @@ class SocketClient {
       // Send join request
       final message = SocketMessage(
         type: 'REQ_JOIN',
-        payload: {'name': playerName},
+        payload: {
+          'id': localPlayerId,
+          'name': playerName,
+          'team': 'red',
+          'role': 'operative',
+        },
       );
       _sendMessage(message);
 
@@ -50,17 +59,7 @@ class SocketClient {
           final socketMessage = SocketMessage.fromJson(json);
           _logger.i('Received message: ${socketMessage.type}');
 
-          // Handle messages
-          if (socketMessage.type == 'SYNC_MAP') {
-            // Update local game state
-            _logger.i('Game map synced');
-          } else if (socketMessage.type == 'STATE_UPDATE') {
-            // Update local state
-            _logger.i('Game state updated');
-          } else if (socketMessage.type == 'PLAYER_JOINED') {
-            final name = socketMessage.payload['name'];
-            _logger.i('Player joined: $name');
-          }
+          onMessageReceived(socketMessage);
         } catch (e) {
           _logger.e('Error parsing message: $e');
         }
