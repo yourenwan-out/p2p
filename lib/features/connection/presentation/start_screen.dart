@@ -7,6 +7,7 @@ import 'package:p2p_codenames/core/network/connection_provider.dart';
 import 'package:p2p_codenames/core/network/ip_utils.dart';
 import 'package:p2p_codenames/core/utils/validators.dart';
 import 'lobby_screen.dart';
+import '../../testing/presentation/test_runner_screen.dart';
 
 /// Start screen for the P2P Codenames app
 /// Allows users to host a game or join an existing one
@@ -140,6 +141,16 @@ class _StartScreenState extends ConsumerState<StartScreen> {
             ),
           ],
         ),
+      floatingActionButton: FloatingActionButton.extended(
+        onPressed: () {
+          Navigator.push(
+            context,
+            MaterialPageRoute(builder: (context) => const TestRunnerScreen()),
+          );
+        },
+        label: const Text('Self Test 🧪'),
+        icon: const Icon(Icons.science),
+        backgroundColor: Colors.purple.shade200,
       ),
     );
   }
