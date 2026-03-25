@@ -45,7 +45,7 @@ class StorageTests {
 
       // Simulate a "corrupt" read (getting null where we expect something)
       const dynamic corruptVal = null;
-      final fallback = corruptVal ?? 'RECOVERED';
+      const fallback = corruptVal ?? 'RECOVERED';
       if (fallback != 'RECOVERED') throw Exception('Recovery logic failed');
 
       await box.deleteFromDisk();
