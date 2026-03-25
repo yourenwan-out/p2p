@@ -22,7 +22,7 @@ class SocketHost {
   /// Starts the server and listens for connections
   Future<void> startServer() async {
     try {
-      _serverSocket = await ServerSocket.bind(InternetAddress.anyIPv4, port);
+      _serverSocket = await ServerSocket.bind(InternetAddress.anyIPv4, port, shared: true);
       _logger.i('Server started on port $port');
 
       // Generate game state

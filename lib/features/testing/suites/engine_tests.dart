@@ -66,21 +66,25 @@ class EngineTests {
       container.read(gameProvider.notifier).revealCard(testIndex);
       
       // Out of bounds error checking
+      bool threwNegative = false;
       try {
         container.read(gameProvider.notifier).revealCard(-1);
-        throw Exception('Should throw error on negative index');
       } catch (e) {
-        if (e is Exception && e.toString() == 'Exception: Should throw error on negative index') rethrow;
-        // Expected out of bounds error
+        if (e.toString().contains('Should throw error on negative index')) {
+          threwNegative = true;
+        }
       }
+      if (!threwNegative) throw Exception('Should throw error on negative index');
       
+      bool threwOutOfBounds = false;
       try {
         container.read(gameProvider.notifier).revealCard(25);
-        throw Exception('Should throw error on index > 24');
       } catch (e) {
-        if (e is Exception && e.toString() == 'Exception: Should throw error on index > 24') rethrow;
-        // Expected out of bounds error
+        if (e.toString().contains('Should throw error on index > 24')) {
+          threwOutOfBounds = true;
+        }
       }
+      if (!threwOutOfBounds) throw Exception('Should throw error on index > 24');
 
       return TestResult(
         name: 'Engine: Card Revealing',
