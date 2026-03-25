@@ -99,7 +99,7 @@ class _TestRunnerScreenState extends ConsumerState<TestRunnerScreen> {
         children: [
           Container(
             padding: EdgeInsets.all(16.w),
-            color: Colors.blue.withOpacity(0.1),
+            color: Colors.blue.withValues(alpha: 0.1),
             child: Row(
               mainAxisAlignment: MainAxisAlignment.spaceAround,
               children: [

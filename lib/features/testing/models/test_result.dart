@@ -1,5 +1,4 @@
-import 'package:flutter/material.dart';
-
+// No imports needed for simple enum and class if not using UI colors here
 enum TestStatus { pending, running, passed, failed }
 
 class TestResult {

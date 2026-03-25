@@ -141,6 +141,7 @@ class _StartScreenState extends ConsumerState<StartScreen> {
             ),
           ],
         ),
+      ),
       floatingActionButton: FloatingActionButton.extended(
         onPressed: () {
           Navigator.push(

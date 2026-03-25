@@ -70,7 +70,7 @@ class EngineTests {
         container.read(gameProvider.notifier).revealCard(-1);
         throw Exception('Should throw error on negative index');
       } catch (e) {
-        if (e is Exception && e.toString() == 'Exception: Should throw error on negative index') throw e;
+        if (e is Exception && e.toString() == 'Exception: Should throw error on negative index') rethrow;
         // Expected out of bounds error
       }
       
@@ -78,7 +78,7 @@ class EngineTests {
         container.read(gameProvider.notifier).revealCard(25);
         throw Exception('Should throw error on index > 24');
       } catch (e) {
-        if (e is Exception && e.toString() == 'Exception: Should throw error on index > 24') throw e;
+        if (e is Exception && e.toString() == 'Exception: Should throw error on index > 24') rethrow;
         // Expected out of bounds error
       }
 
@@ -122,7 +122,6 @@ class EngineTests {
       final oppositeTeam = state.currentTurn;
       
       // Find enemy card
-      final oppositeColor = oppositeTeam == Team.red ? CardColor.red : CardColor.blue;
       int enemyIdx = state.cards.indexWhere((c) => c.color == expectedColor); // Now enemy color
       container.read(gameProvider.notifier).revealCard(enemyIdx);
       state = container.read(gameProvider);
