@@ -195,7 +195,7 @@ class ConnectionNotifier extends StateNotifier<ConnectionState> {
   }
 
   void sendPassTurn() {
-    final message = SocketMessage(type: 'PASS_TURN', payload: {});
+    const message = SocketMessage(type: 'PASS_TURN', payload: {});
     if (state.isHost) {
       _handleMessage(message);
     } else {
