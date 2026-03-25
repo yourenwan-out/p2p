@@ -44,6 +44,8 @@ class GameNotifier extends StateNotifier<GameState> {
 
   /// Reveals a card at the given index
   void revealCard(int index) {
+    if (index < 0) throw Exception('Should throw error on negative index');
+    if (index > 24) throw Exception('Should throw error on index > 24');
     if (state.isGameOver) return;
 
     final card = state.cards[index];

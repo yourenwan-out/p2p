@@ -104,7 +104,7 @@ class EngineTests {
       final expectedColor = currentTeam == Team.red ? CardColor.red : CardColor.blue;
       
       // Find a card of the current team color
-      int sameTeamIdx = state.cards.indexWhere((c) => c.color == expectedColor);
+      int sameTeamIdx = state.cards.indexWhere((c) => c.color == expectedColor && !c.isRevealed);
       container.read(gameProvider.notifier).revealCard(sameTeamIdx);
       state = container.read(gameProvider);
       if (state.currentTurn != currentTeam) {
@@ -112,7 +112,7 @@ class EngineTests {
       }
 
       // Find a neutral card
-      int neutralIdx = state.cards.indexWhere((c) => c.color == CardColor.neutral);
+      int neutralIdx = state.cards.indexWhere((c) => c.color == CardColor.neutral && !c.isRevealed);
       container.read(gameProvider.notifier).revealCard(neutralIdx);
       state = container.read(gameProvider);
       if (state.currentTurn == currentTeam) {
@@ -122,7 +122,7 @@ class EngineTests {
       final oppositeTeam = state.currentTurn;
       
       // Find enemy card
-      int enemyIdx = state.cards.indexWhere((c) => c.color == expectedColor); // Now enemy color
+      int enemyIdx = state.cards.indexWhere((c) => c.color == expectedColor && !c.isRevealed); // Now enemy color
       container.read(gameProvider.notifier).revealCard(enemyIdx);
       state = container.read(gameProvider);
       if (state.currentTurn == oppositeTeam) {
