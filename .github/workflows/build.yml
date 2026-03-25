@@ -1,0 +1,43 @@
+name: Flutter Build APK
+
+# متى يعمل هذا الكود؟ (عند كل عملية Push لفرع main)
+on:
+  push:
+    branches: [ "main" ]
+
+jobs:
+  build:
+    # نظام التشغيل الذي سيتم البناء عليه (سيرفر لينكس)
+    runs-on: ubuntu-latest
+
+    steps:
+      # 1. سحب الكود الخاص بك من GitHub
+      - uses: actions/checkout@v4
+
+      # 2. إعداد لغة Java (ضرورية لبناء الأندرويد)
+      - name: Set up JDK 17
+        uses: actions/setup-java@v4
+        with:
+          java-version: '17'
+          distribution: 'temurin'
+
+      # 3. إعداد بيئة فلاتر (Flutter SDK)
+      - name: Set up Flutter
+        uses: subosito/flutter-action@v2
+        with:
+          channel: 'stable'
+
+      # 4. تحميل المكتبات المطلوبة (pub get)
+      - name: Install dependencies
+        run: flutter pub get
+
+      # 5. بناء تطبيق الأندرويد (Release APK)
+      - name: Build APK
+        run: flutter build apk --release
+
+      # 6. رفع الملف الناتج لكي تستطيع تحميله
+      - name: Upload APK
+        uses: actions/upload-artifact@v4
+        with:
+          name: release-apk
+          path: build/app/outputs/flutter-apk/app-release.apk
