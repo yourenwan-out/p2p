@@ -3,7 +3,7 @@ import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:logger/logger.dart';
 import '../models/game_state.dart';
 import '../models/word_card.dart';
-import '../../core/constants/word_database.dart';
+import '../../../core/constants/word_database.dart';
 
 /// Notifier for managing game state
 class GameNotifier extends StateNotifier<GameState> {
@@ -96,7 +96,7 @@ class GameNotifier extends StateNotifier<GameState> {
     if (card.color == CardColor.assassin) {
       isGameOver = true;
       winner = state.currentTurn == Team.red ? Team.blue : Team.red;
-      _logger.i('Assassin revealed! ${winner!.name} wins');
+      _logger.i('Assassin revealed! ${winner?.name} wins');
     } else {
       final redCards = updatedCards.where((c) => c.color == CardColor.red && c.isRevealed).length;
       final blueCards = updatedCards.where((c) => c.color == CardColor.blue && c.isRevealed).length;
