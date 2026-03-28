@@ -32,6 +32,9 @@ dependencies:
   # Logging
   logger: ^2.0.2+1
 
+  # Google Fonts (auto-downloads: Space Grotesk, Noto Sans Arabic, IBM Plex Sans Arabic, Manrope)
+  google_fonts: ^6.2.1
+
 dev_dependencies:
   flutter_test:
     sdk: flutter
