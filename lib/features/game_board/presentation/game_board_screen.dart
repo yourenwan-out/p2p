@@ -15,7 +15,7 @@ const _surfaceContainerHighest = Color(0xFF183655);
 const _surfaceContainerLowest = Color(0xFF000F20);
 const _surfaceContainer = Color(0xFF00213D);
 const _surfaceVariant = Color(0xFF183655);
-const _surfaceBright = Color(0xFF1D3B5A);
+// _surfaceBright reserved for future use
 const _primary = Color(0xFFFFB77A);
 const _primaryContainer = Color(0xFFF28E26);
 const _secondary = Color(0xFF95CEEF);
@@ -124,7 +124,7 @@ class _GameBoardScreenState extends ConsumerState<GameBoardScreen> {
 
   // ─── HEADER ────────────────────────────────────────────────────────────────
   Widget _buildHeader(Player? localPlayer, GameState gameState, int redLeft, int blueLeft) {
-    final teamName = localPlayer?.team == Team.red ? 'الفريق الأحمر' : 'الفريق الأزرق';
+
     return Container(
       color: _surfaceContainer.withValues(alpha: 0.97),
       child: SafeArea(
@@ -441,7 +441,7 @@ class _GameBoardScreenState extends ConsumerState<GameBoardScreen> {
     );
   }
 
-  Widget _controlBanner_waiting(String msg, IconData icon, {Color color = const Color(0xFF95CEEF)}) {
+  Widget _controlBannerWaiting(String msg, IconData icon, {Color color = const Color(0xFF95CEEF)}) {
     return Container(
       width: double.infinity,
       padding: const EdgeInsets.symmetric(horizontal: 16, vertical: 10),
@@ -723,7 +723,7 @@ class _OperativeCard extends StatelessWidget {
       ),
       CardColor.assassin => (
         [Colors.black, const Color(0xFF1A1A1A)],
-        Icons.skull,
+        Icons.dangerous,
         const Color(0xFFFFB4AB),
       ),
       CardColor.neutral => (

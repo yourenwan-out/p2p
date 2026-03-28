@@ -13,7 +13,7 @@ import '../../testing/presentation/test_runner_screen.dart';
 const _surface = Color(0xFF001429);
 const _surfaceContainerLow = Color(0xFF001D36);
 const _surfaceContainerHighest = Color(0xFF183655);
-const _surfaceContainerHigh = Color(0xFF092B4A);
+// _surfaceContainerHigh reserved for future use
 const _primary = Color(0xFFFFB77A);
 const _primaryContainer = Color(0xFFF28E26);
 const _secondary = Color(0xFF95CEEF);

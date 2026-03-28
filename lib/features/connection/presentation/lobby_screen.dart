@@ -261,7 +261,7 @@ class _LobbyScreenState extends ConsumerState<LobbyScreen> {
                 color: _primary, fontSize: 24, fontWeight: FontWeight.bold,
                 letterSpacing: 2)),
           ]),
-          Icon(Icons.copy, color: _onSurfaceVariant, size: 20),
+          const Icon(Icons.copy, color: _onSurfaceVariant, size: 20),
         ],
       ),
     );
@@ -541,7 +541,7 @@ class _LobbyScreenState extends ConsumerState<LobbyScreen> {
               blurRadius: 24, offset: const Offset(0, 8))],
           ),
           child: Row(mainAxisAlignment: MainAxisAlignment.center, children: [
-            const Icon(Icons.rocket_launch, color: _onPrimaryContainer, size: 20),
+        const Icon(Icons.rocket_launch, color: _onPrimaryContainer, size: 20),
             const SizedBox(width: 10),
             Text('بدء المهمة',
               style: GoogleFonts.spaceGrotesk(
