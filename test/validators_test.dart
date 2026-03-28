@@ -1,5 +1,5 @@
 import 'package:flutter_test/flutter_test.dart';
-import 'package:p2p_codenames/lib/core/utils/validators.dart';
+import 'package:p2p_codenames/core/utils/validators.dart';
 
 void main() {
   group('Validators', () {
