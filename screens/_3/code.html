@@ -1,0 +1,209 @@
+<!DOCTYPE html>
+
+<html class="dark" dir="rtl" lang="ar"><head>
+<meta charset="utf-8"/>
+<meta content="width=device-width, initial-scale=1.0" name="viewport"/>
+<title>بروتوكول سايفر | شاشة البداية</title>
+<script src="https://cdn.tailwindcss.com?plugins=forms,container-queries"></script>
+<link href="https://fonts.googleapis.com/css2?family=IBM+Plex+Sans+Arabic:wght@300;400;500;600;700&amp;family=Readex+Pro:wght@200;300;400;500;600;700&amp;display=swap" rel="stylesheet"/>
+<link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:wght,FILL@100..700,0..1&amp;display=swap" rel="stylesheet"/>
+<script id="tailwind-config">
+        tailwind.config = {
+            darkMode: "class",
+            theme: {
+                extend: {
+                    colors: {
+                        "outline": "#a38d7c",
+                        "inverse-on-surface": "#123250",
+                        "secondary-fixed-dim": "#95ceef",
+                        "on-error-container": "#ffdad6",
+                        "surface-container-lowest": "#000f20",
+                        "primary": "#ffb77a",
+                        "on-primary-container": "#5d3100",
+                        "on-tertiary-container": "#741b00",
+                        "secondary-container": "#034f6b",
+                        "surface-dim": "#001429",
+                        "surface-container-low": "#001d36",
+                        "surface-container-highest": "#183655",
+                        "on-background": "#d1e4ff",
+                        "on-error": "#690005",
+                        "secondary-fixed": "#c3e7ff",
+                        "on-tertiary": "#5f1500",
+                        "on-secondary-fixed": "#001e2c",
+                        "error-container": "#93000a",
+                        "on-secondary-container": "#87c0e1",
+                        "surface-bright": "#1d3b5a",
+                        "surface-variant": "#183655",
+                        "outline-variant": "#554336",
+                        "on-primary-fixed": "#2e1500",
+                        "tertiary-fixed": "#ffdbd1",
+                        "primary-container": "#f28e26",
+                        "tertiary-fixed-dim": "#ffb5a0",
+                        "inverse-primary": "#8f4e00",
+                        "surface-tint": "#ffb77a",
+                        "tertiary": "#ffb5a0",
+                        "surface-container-high": "#092b4a",
+                        "surface": "#001429",
+                        "primary-fixed-dim": "#ffb77a",
+                        "on-tertiary-fixed-variant": "#872100",
+                        "on-secondary": "#003549",
+                        "on-primary-fixed-variant": "#6d3a00",
+                        "secondary": "#95ceef",
+                        "on-surface-variant": "#dbc2b0",
+                        "background": "#001429",
+                        "tertiary-container": "#ff835f",
+                        "primary-fixed": "#ffdcc2",
+                        "on-tertiary-fixed": "#3b0900",
+                        "on-secondary-fixed-variant": "#004c69",
+                        "error": "#ffb4ab",
+                        "inverse-surface": "#d1e4ff",
+                        "surface-container": "#00213d",
+                        "on-surface": "#d1e4ff",
+                        "on-primary": "#4c2700"
+                    },
+                    fontFamily: {
+                        "headline": ["Readex Pro", "sans-serif"],
+                        "body": ["IBM Plex Sans Arabic", "sans-serif"],
+                        "label": ["IBM Plex Sans Arabic", "sans-serif"]
+                    },
+                    borderRadius: { "DEFAULT": "0.5rem", "lg": "1rem", "xl": "1.5rem", "full": "9999px" },
+                },
+            },
+        }
+    </script>
+<style>
+        .material-symbols-outlined {
+            font-variation-settings: 'FILL' 0, 'wght' 300, 'GRAD' 0, 'opsz' 24;
+        }
+        .bg-mesh {
+            background-image: radial-gradient(circle at 2px 2px, rgba(24, 54, 85, 0.4) 1px, transparent 0);
+            background-size: 40px 40px;
+        }
+        [dir="rtl"] .mirror-rtl {
+            transform: scaleX(-1);
+        }
+        body {
+            min-height: 100dvh;
+            line-height: 1.8;
+        }
+        .hero-spacer {
+            padding-top: clamp(4rem, 15vh, 10rem);
+            padding-bottom: clamp(4rem, 15vh, 10rem);
+        }
+        .section-gap {
+            margin-bottom: 6rem;
+        }
+    </style>
+<style>
+    body {
+      min-height: max(884px, 100dvh);
+    }
+  </style>
+</head>
+<body class="bg-surface text-on-surface font-body min-h-screen flex flex-col overflow-x-hidden">
+<header class="fixed top-0 z-50 w-full flex justify-between items-center px-8 py-6 backdrop-blur-xl bg-[#001429]/60">
+<div class="flex items-center gap-4">
+<span class="material-symbols-outlined text-[#ffb77a] text-2xl" data-icon="security" style="">security</span>
+<h1 class="text-2xl font-bold text-primary font-display tracking-wide uppercase">الأسماء الرمزية</h1>
+</div>
+<button class="flex items-center gap-2 px-5 py-2.5 rounded-full bg-[#F28E26]/10 border border-[#F28E26]/20 hover:bg-[#F28E26]/20 transition-all text-[#F28E26] shadow-sm group active:scale-95">
+<span class="material-symbols-outlined text-xl transition-transform group-hover:scale-110" data-icon="favorite" style="font-variation-settings: 'FILL' 1, 'wght' 400, 'GRAD' 0, 'opsz' 24;">favorite</span>
+<span class="text-sm font-label font-bold uppercase tracking-wider">إدعمنا</span>
+</button>
+</header>
+<main class="flex-1 px-8 max-w-3xl mx-auto w-full relative bg-mesh">
+<section class="hero-spacer text-center flex flex-col items-center">
+<div class="inline-block px-5 py-2 mb-10 rounded-full bg-secondary-container/20 border border-secondary/30 backdrop-blur-sm">
+<span class="text-xs font-label font-medium uppercase tracking-[0.2em] text-secondary" style="">الحالة التشغيلية: الاستعداد</span>
+</div>
+<h2 class="text-5xl md:text-7xl font-headline font-bold mb-8 leading-[1.15]" style="">
+            حدد هويتك، <br/>
+<span class="text-primary" style="">أيها العميل</span>.
+        </h2>
+<p class="text-on-surface-variant font-body text-lg md:text-xl max-w-xl mx-auto leading-relaxed opacity-80" style="">
+            قم بتأمين اتصالك بشبكة الاستخبارات العالمية. الأسماء الرمزية إلزامية لجميع العمليات الميدانية.
+        </p>
+</section>
+<div class="section-gap flex flex-col items-center">
+<div class="w-full max-w-md bg-surface-container-low/40 p-10 rounded-3xl border border-outline-variant/10 shadow-2xl backdrop-blur-sm">
+<label class="block text-xs font-label font-bold uppercase tracking-widest text-outline text-center mb-6" for="agent-id" style="">تعريف العميل</label>
+<div class="relative group">
+<input class="w-full bg-transparent border-0 border-b-[3px] border-outline/20 focus:border-primary focus:ring-0 text-3xl font-headline text-center py-6 px-0 transition-all duration-500 placeholder:text-outline/20 placeholder:font-light" id="agent-id" placeholder="أدخل الاسم الرمزي..." type="text"/>
+<div class="absolute inset-0 pointer-events-none flex items-center justify-center opacity-10 group-focus-within:opacity-30 transition-opacity">
+<span class="material-symbols-outlined text-6xl text-primary" data-icon="fingerprint" style="">fingerprint</span>
+</div>
+</div>
+</div>
+</div>
+<div class="space-y-16 section-gap">
+<div class="relative overflow-hidden rounded-[2.5rem] bg-surface-container-low p-10 group cursor-pointer hover:bg-surface-container-high transition-all duration-500 shadow-2xl border border-outline-variant/5">
+<div class="flex flex-col md:flex-row justify-between items-center gap-8 relative z-10 text-center md:text-right">
+<div class="flex-1">
+<div class="text-xs font-label font-extrabold uppercase tracking-widest text-primary mb-4 opacity-70" style="">تهيئة الجهاز</div>
+<h3 class="text-4xl font-headline font-bold mb-6" style="">إنشاء مهمة</h3>
+<p class="text-lg text-on-surface-variant font-body mb-10 max-w-sm mx-auto md:mx-0 leading-relaxed" style="">استضف خادمًا آمنًا ونسق عمليات الفريق كمحلل رئيسي.</p>
+<button class="inline-flex items-center gap-4 px-10 py-5 rounded-full bg-gradient-to-r from-primary to-primary-container text-on-primary-container font-bold text-base uppercase tracking-wider shadow-2xl hover:shadow-primary/20 transition-all active:scale-95" style="">
+<span class="" style="">تشغيل الخادم</span>
+<span class="material-symbols-outlined text-xl" data-icon="rocket_launch" style="">rocket_launch</span>
+</button>
+</div>
+<div class="w-32 h-32 bg-primary/10 rounded-full flex items-center justify-center border border-primary/20 shrink-0">
+<span class="material-symbols-outlined text-5xl text-primary" data-icon="hub" style="">hub</span>
+</div>
+</div>
+<div class="absolute -top-24 -left-24 w-64 h-64 bg-primary/10 blur-[100px] rounded-full"></div>
+</div>
+<div class="relative overflow-hidden rounded-[2.5rem] bg-surface-container-highest p-10 group cursor-pointer border border-outline-variant/10 shadow-2xl transition-all duration-500 hover:border-secondary/30">
+<div class="flex flex-col md:flex-row justify-between items-center gap-8 relative z-10 mb-10 text-center md:text-right">
+<div class="flex-1">
+<div class="text-xs font-label font-extrabold uppercase tracking-widest text-secondary mb-4 opacity-70" style="">اتصال خارجي</div>
+<h3 class="text-4xl font-headline font-bold" style="">انضمام لمهمة</h3>
+</div>
+<div class="w-20 h-20 bg-secondary/10 rounded-full flex items-center justify-center shrink-0">
+<span class="material-symbols-outlined text-3xl text-secondary mirror-rtl" data-icon="login" style="">login</span>
+</div>
+</div>
+<div class="relative z-10 max-w-md mx-auto">
+<div class="group/input">
+<label class="block text-xs font-label font-bold uppercase text-outline/60 text-center mb-4" for="ip-address" style="">عنوان IP المستهدف</label>
+<div class="flex items-center gap-6">
+<input class="flex-1 bg-surface-container-lowest/50 border-0 border-b-2 border-outline/20 focus:border-secondary focus:ring-0 text-2xl font-headline py-4 px-0 transition-all placeholder:text-outline/20 text-center tracking-widest" dir="ltr" id="ip-address" placeholder="192.168.1.1" type="text"/>
+<button class="w-16 h-16 rounded-2xl bg-secondary text-on-secondary flex items-center justify-center shadow-xl hover:shadow-secondary/20 transition-all active:scale-95 shrink-0" style="">
+<span class="material-symbols-outlined text-3xl mirror-rtl" data-icon="chevron_right" style="">chevron_right</span>
+</button>
+</div>
+</div>
+</div>
+</div>
+</div>
+<div class="pb-40 flex justify-center">
+<button class="group flex items-center gap-6 text-outline-variant hover:text-primary transition-all duration-500" style="">
+<div class="w-2 h-2 rounded-full bg-outline-variant group-hover:bg-primary group-hover:scale-150 transition-all"></div>
+<span class="text-xs font-label font-bold uppercase tracking-[0.4em] border-b-2 border-outline-variant/10 pb-2 group-hover:border-primary/40 group-hover:tracking-[0.5em]" style="">الاختبار الذاتي</span>
+<div class="w-2 h-2 rounded-full bg-outline-variant group-hover:bg-primary group-hover:scale-150 transition-all"></div>
+</button>
+</div>
+</main>
+<nav class="fixed bottom-0 w-full z-50 flex justify-around items-center px-4 pb-6 pt-2 bg-[#001d36]/90 backdrop-blur-lg rounded-t-2xl border-t border-[#554336]/10 shadow-[0_-10px_30px_rgba(0,0,0,0.3)]">
+<a class="flex flex-col items-center justify-center bg-[#183655] text-[#ffb77a] rounded-xl px-4 py-1 shadow-inner" href="#">
+<span class="material-symbols-outlined text-2xl mb-1" data-icon="login">login</span>
+<span class="font-['Manrope'] text-[10px] font-semibold tracking-wide uppercase">الإنضمام</span>
+</a>
+<a class="flex flex-col items-center justify-center text-[#554336] opacity-70 hover:text-[#ffb77a] hover:bg-[#183655]/50 transition-all px-4 py-1" href="#">
+<span class="material-symbols-outlined text-2xl mb-1" data-icon="groups">groups</span>
+<span class="font-['Manrope'] text-[10px] font-semibold tracking-wide uppercase">الفريق</span>
+</a>
+<a class="flex flex-col items-center justify-center text-[#554336] opacity-70 hover:text-[#ffb77a] hover:bg-[#183655]/50 transition-all px-4 py-1" href="#">
+<span class="material-symbols-outlined text-2xl mb-1" data-icon="grid_view">grid_view</span>
+<span class="font-['Manrope'] text-[10px] font-semibold tracking-wide uppercase">المهمة</span>
+</a>
+<a class="flex flex-col items-center justify-center text-[#554336] opacity-70 hover:text-[#ffb77a] hover:bg-[#183655]/50 transition-all px-4 py-1" href="#">
+<span class="material-symbols-outlined text-2xl mb-1" data-icon="terminal">terminal</span>
+<span class="font-['Manrope'] text-[10px] font-semibold tracking-wide uppercase">LOGS</span>
+</a>
+</nav>
+<div class="fixed top-0 left-0 w-full h-full pointer-events-none -z-10 overflow-hidden">
+<div class="absolute top-1/4 -right-40 w-[500px] h-[500px] bg-primary/10 blur-[140px] rounded-full"></div>
+<div class="absolute bottom-1/4 -left-40 w-[600px] h-[600px] bg-secondary/5 blur-[160px] rounded-full"></div>
+</div>
+</body></html>
