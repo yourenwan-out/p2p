@@ -253,10 +253,10 @@ class _GameBoardScreenState extends ConsumerState<GameBoardScreen> {
 
   Widget _buildSpymasterControl(Player localPlayer, GameState gameState) {
     if (localPlayer.team != gameState.currentTurn) {
-      return _controlBanner_waiting('بانتظار دور فريقك...', Icons.hourglass_empty);
+      return _controlBannerWaiting('بانتظار دور فريقك...', Icons.hourglass_empty);
     }
     if (gameState.currentClueWord != null) {
-      return _controlBanner_waiting('لقد أعطيت تلميحاً! بانتظار العملاء...', Icons.record_voice_over, color: _secondary);
+      return _controlBannerWaiting('لقد أعطيت تلميحاً! بانتظار العملاء...', Icons.record_voice_over, color: _secondary);
     }
     // Input panel
     return Container(
@@ -372,7 +372,7 @@ class _GameBoardScreenState extends ConsumerState<GameBoardScreen> {
 
   Widget _buildOperativeControl(Player localPlayer, GameState gameState, notifier) {
     if (gameState.currentClueWord == null) {
-      return _controlBanner_waiting('الرئيس يفكر بالتلميح...', Icons.psychology, color: _onSurfaceVariant);
+      return _controlBannerWaiting('الرئيس يفكر بالتلميح...', Icons.psychology, color: _onSurfaceVariant);
     }
 
     final maxGuesses = gameState.currentClueNumber == 99 ? 99 : (gameState.currentClueNumber! + 1);
