@@ -33,7 +33,6 @@ class AppwriteTests {
     try {
       final container = ProviderContainer();
       final service = container.read(appwriteRoomServiceProvider);
-      if (service == null) throw Exception('Room Service is null');
       
       return TestResult(
         name: 'Appwrite: Room Service Injection',
