@@ -4,9 +4,14 @@ import 'package:appwrite/appwrite.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:google_fonts/google_fonts.dart';
+import 'package:go_router/go_router.dart';
+import 'package:flutter/services.dart';
 
 import '../../../../core/appwrite/appwrite_providers.dart';
 import '../../../../core/appwrite/appwrite_room_service.dart';
+import '../../../../core/network/connection_provider.dart';
+import '../../../game_board/providers/game_provider.dart';
+import '../../../game_board/models/player.dart';
 
 const _surface = Color(0xFF001429);
 const _surfaceContainerLow = Color(0xFF001D36);
@@ -65,9 +70,25 @@ class _MissionRoomScreenState extends ConsumerState<MissionRoomScreen> {
             _roomData = event.payload;
           });
           if (event.payload['status'] == 'active') {
-             // Game started! Navigate to board logic
              _showSnack('بدأت المهمة!');
-             // Navigator.push(...)
+             
+             // Inject local ID, Appwrite Players, and the Appwrite Room ID into the global socket notifier
+             // to run the game solely through Appwrite.
+             final notifier = ref.read(connectionProvider.notifier);
+             final mappedPlayers = _players.map((p) => Player(
+               id: p['id'], name: p['name'], team: p['team'] == 'red' ? Team.red : Team.blue, role: p['role'] == 'spymaster' ? Role.spymaster : Role.operative
+             )).toList();
+             
+             notifier.joinAppwriteGame(
+               _myId!, 
+               mappedPlayers, 
+               widget.isHost, 
+               widget.roomId!
+             );
+
+             if (mounted) {
+               context.go('/game');
+             }
           }
         }
       });
@@ -110,19 +131,29 @@ class _MissionRoomScreenState extends ConsumerState<MissionRoomScreen> {
   }
 
   Future<void> _leaveRoom() async {
+    // Show a small loading if needed, or simply pop immediately and let it clean up asynchronously
+    if (mounted) Navigator.pop(context);
+    
     if (_myId != null && widget.roomId != null) {
       try {
         await ref.read(appwriteRoomServiceProvider).leaveRoom(widget.roomId!, _myId!);
       } catch (e) {
-        // Ignore leave errors
+        // Ignore
       }
     }
-    if (mounted) Navigator.pop(context);
   }
 
   Future<void> _launchMission() async {
     if (!widget.isHost) return;
     try {
+      // 1. Generate the source-of-truth randomized game state locally as the Host
+      final initialState = ref.read(gameProvider).toJson();
+      final jsonStr = jsonEncode(initialState);
+      
+      // 2. Upload it to Appwrite
+      await ref.read(appwriteRoomServiceProvider).updateGameState(widget.roomId!, jsonStr);
+
+      // 3. Trigger start (updates status to active)
       await ref.read(appwriteRoomServiceProvider).startGame(widget.roomId!);
     } catch (e) {
       _showSnack('فشل بدء المهمة: $e');
@@ -339,7 +370,20 @@ class _MissionRoomScreenState extends ConsumerState<MissionRoomScreen> {
               const SizedBox(height: 4),
               Row(
                 children: [
-                  Text('#$code', style: GoogleFonts.spaceGrotesk(color: _primary, fontSize: 20, fontWeight: FontWeight.bold, letterSpacing: 2)),
+                  GestureDetector(
+                    onTap: () {
+                      Clipboard.setData(ClipboardData(text: code));
+                      _showSnack('تم نسخ رمز الغرفة!');
+                    },
+                    child: Row(
+                      mainAxisSize: MainAxisSize.min,
+                      children: [
+                        Text('#$code', style: GoogleFonts.spaceGrotesk(color: _primary, fontSize: 20, fontWeight: FontWeight.bold, letterSpacing: 2)),
+                        const SizedBox(width: 8),
+                        const Icon(Icons.copy, color: _primary, size: 16),
+                      ],
+                    ),
+                  ),
                 ],
               ),
             ],
@@ -430,9 +474,10 @@ class _MissionRoomScreenState extends ConsumerState<MissionRoomScreen> {
                 onChanged: (val) {
                   if (val != null) _updateMyAgent(myTeam, val);
                 },
-                items: const [
-                  DropdownMenuItem(value: 'field_agent', child: Text('عميل ميداني')),
-                  DropdownMenuItem(value: 'spymaster', child: Text('رئيس الشبكة')),
+                items: [
+                  const DropdownMenuItem(value: 'field_agent', child: Text('عميل ميداني')),
+                  if (myRole == 'spymaster' || (myTeam == 'red' ? !hasRedSpymaster : !hasBlueSpymaster))
+                    const DropdownMenuItem(value: 'spymaster', child: Text('رئيس الشبكة')),
                 ],
               ),
             ),

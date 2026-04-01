@@ -185,6 +185,21 @@ class AppwriteRoomService {
     }
   }
 
+  Future<void> updateGameState(String roomId, String gameStateJson) async {
+    try {
+      await _databases.updateDocument(
+        databaseId: databaseId,
+        collectionId: roomsCollectionId,
+        documentId: roomId,
+        data: {
+          'game_state': gameStateJson,
+        },
+      );
+    } catch (e) {
+      // Ignored to prevent UI crashes if some packets fail
+    }
+  }
+
   Future<List<Map<String, dynamic>>> getPublicRooms() async {
     try {
       final res = await _databases.listDocuments(

@@ -6,6 +6,7 @@ import 'package:p2p_codenames/core/network/ip_utils.dart';
 import 'package:p2p_codenames/features/game_board/presentation/game_board_screen.dart';
 import 'package:p2p_codenames/features/game_board/models/player.dart';
 import 'package:p2p_codenames/features/game_board/models/game_state.dart';
+import 'package:flutter/services.dart';
 
 // ─── Design System Colors ─────────────────────────────────────────────────────
 const _surface = Color(0xFF001429);
@@ -151,7 +152,7 @@ class _LobbyScreenState extends ConsumerState<LobbyScreen> {
                           const SizedBox(height: 24),
                           // Settings card
                           if (localPlayer != null)
-                            _buildSettingsCard(localPlayer, connectionState),
+                            _buildSettingsCard(localPlayer, connectionState, hasRedSpy, hasBluespy),
                           const SizedBox(height: 20),
                           // Start button or waiting
                           if (connectionState.isHost)
@@ -261,7 +262,15 @@ class _LobbyScreenState extends ConsumerState<LobbyScreen> {
                 color: _primary, fontSize: 24, fontWeight: FontWeight.bold,
                 letterSpacing: 2)),
           ]),
-          const Icon(Icons.copy, color: _onSurfaceVariant, size: 20),
+          GestureDetector(
+            onTap: () {
+              if (_hostIP != null) {
+                Clipboard.setData(ClipboardData(text: _hostIP!));
+                _showSnack('تم نسخ عنوان IP!');
+              }
+            },
+            child: const Icon(Icons.copy, color: _onSurfaceVariant, size: 20),
+          ),
         ],
       ),
     );
@@ -394,7 +403,7 @@ class _LobbyScreenState extends ConsumerState<LobbyScreen> {
     return tile;
   }
 
-  Widget _buildSettingsCard(Player localPlayer, ConnectionState state) {
+  Widget _buildSettingsCard(Player localPlayer, ConnectionState state, bool hasRedSpy, bool hasBlueSpy) {
     return Container(
       width: double.infinity,
       padding: const EdgeInsets.all(20),
@@ -438,7 +447,7 @@ class _LobbyScreenState extends ConsumerState<LobbyScreen> {
           style: GoogleFonts.notoSansArabic(
             color: _outline, fontSize: 10, fontWeight: FontWeight.w700, letterSpacing: 2)),
         const SizedBox(height: 6),
-        _roleDropdown(localPlayer),
+        _roleDropdown(localPlayer, hasRedSpy, hasBlueSpy),
         const SizedBox(height: 14),
         // Info note
         Container(
@@ -493,7 +502,7 @@ class _LobbyScreenState extends ConsumerState<LobbyScreen> {
     );
   }
 
-  Widget _roleDropdown(Player localPlayer) {
+  Widget _roleDropdown(Player localPlayer, bool hasRedSpy, bool hasBlueSpy) {
     return Container(
       decoration: const BoxDecoration(
         color: _surfaceContainerLowest,
@@ -509,9 +518,10 @@ class _LobbyScreenState extends ConsumerState<LobbyScreen> {
           padding: const EdgeInsets.symmetric(horizontal: 16, vertical: 4),
           icon: const Icon(Icons.expand_more, color: _outlineVariant),
           style: GoogleFonts.notoSansArabic(color: _onSurface, fontSize: 14),
-          items: const [
-            DropdownMenuItem(value: Role.operative, child: Text('عميل ميداني')),
-            DropdownMenuItem(value: Role.spymaster, child: Text('رئيس الشبكة 🔍')),
+          items: [
+            const DropdownMenuItem(value: Role.operative, child: Text('عميل ميداني')),
+            if (localPlayer.role == Role.spymaster || (localPlayer.team == Team.red ? !hasRedSpy : !hasBlueSpy))
+              const DropdownMenuItem(value: Role.spymaster, child: Text('رئيس الشبكة 🔍')),
           ],
           onChanged: (Role? r) {
             if (r != null) {
