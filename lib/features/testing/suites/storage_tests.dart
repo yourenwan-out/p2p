@@ -22,7 +22,7 @@ class StorageTests {
         throw Exception('Saved IP ($savedIP) does not match original ($testIP)');
       }
       
-      await box.deleteFromDisk();
+      await box.clear();
 
       return TestResult(
         name: 'Storage: Hive Save/Load',
@@ -48,7 +48,7 @@ class StorageTests {
       const fallback = corruptVal ?? 'RECOVERED';
       if (fallback != 'RECOVERED') throw Exception('Recovery logic failed');
 
-      await box.deleteFromDisk();
+      await box.clear();
 
       return TestResult(
         name: 'Storage: Error Recovery',
