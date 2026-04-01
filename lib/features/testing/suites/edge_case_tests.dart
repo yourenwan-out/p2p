@@ -57,9 +57,9 @@ class EdgeCaseTests {
         throw Exception('Card was revealed even though no clue was given (0 remaining guesses)');
       }
 
-      return TestResult(name: 'Edge Cases: Click Without Clue', status: TestStatus.passed, duration: DateTime.now().difference(startTime));
+      return TestResult(name: 'Edge Cases: Rogue Client', status: TestStatus.passed, duration: DateTime.now().difference(startTime));
     } catch (e) {
-      return TestResult(name: 'Edge Cases: Click Without Clue', status: TestStatus.failed, errorMessage: e.toString());
+      return TestResult(name: 'Edge Cases: Rogue Client', status: TestStatus.failed, errorMessage: e.toString());
     }
   }
 }

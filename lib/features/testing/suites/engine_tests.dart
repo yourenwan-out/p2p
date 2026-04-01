@@ -52,9 +52,9 @@ class EngineTests {
       if (state.currentClueWord != 'TEST') throw Exception('Clue word did not update');
       if (state.remainingGuesses != 3) throw Exception('Remaining guesses should be N + 1 (2 + 1 = 3)');
 
-      return TestResult(name: 'Engine: Spymaster Clues', status: TestStatus.passed, duration: DateTime.now().difference(startTime));
+      return TestResult(name: 'Engine: Card Revealing', status: TestStatus.passed, duration: DateTime.now().difference(startTime));
     } catch (e) {
-      return TestResult(name: 'Engine: Spymaster Clues', status: TestStatus.failed, errorMessage: e.toString());
+      return TestResult(name: 'Engine: Card Revealing', status: TestStatus.failed, errorMessage: e.toString());
     }
   }
 
