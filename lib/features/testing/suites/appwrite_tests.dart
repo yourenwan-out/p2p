@@ -32,7 +32,7 @@ class AppwriteTests {
     final startTime = DateTime.now();
     try {
       final container = ProviderContainer();
-      final service = container.read(appwriteRoomServiceProvider);
+      container.read(appwriteRoomServiceProvider);
       
       return TestResult(
         name: 'Appwrite: Room Service Injection',
