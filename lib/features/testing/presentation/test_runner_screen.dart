@@ -366,7 +366,7 @@ class _TestRunnerScreenState extends ConsumerState<TestRunnerScreen> {
       case TestStatus.passed:
         return const Icon(Icons.check_circle_rounded, color: Colors.green, size: 20);
       case TestStatus.failed:
-        return Icon(Icons.cancel_rounded, color: _error, size: 20);
+        return const Icon(Icons.cancel_rounded, color: _error, size: 20);
     }
   }
 
@@ -404,7 +404,7 @@ class _TestRunnerScreenState extends ConsumerState<TestRunnerScreen> {
             padding: const EdgeInsets.symmetric(vertical: 16),
             decoration: BoxDecoration(
               gradient: _isRunning
-                ? LinearGradient(colors: [_surfaceContainerHigh, _surfaceContainerHighest])
+                ? const LinearGradient(colors: [_surfaceContainerHigh, _surfaceContainerHighest])
                 : const LinearGradient(colors: [_primary, _primaryContainer]),
               borderRadius: BorderRadius.circular(999),
               boxShadow: _isRunning ? null : [BoxShadow(

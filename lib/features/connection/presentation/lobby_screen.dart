@@ -495,9 +495,9 @@ class _LobbyScreenState extends ConsumerState<LobbyScreen> {
 
   Widget _roleDropdown(Player localPlayer) {
     return Container(
-      decoration: BoxDecoration(
+      decoration: const BoxDecoration(
         color: _surfaceContainerLowest,
-        border: const Border(bottom: BorderSide(color: _outlineVariant, width: 2)),
+        border: Border(bottom: BorderSide(color: _outlineVariant, width: 2)),
         borderRadius: const BorderRadius.only(
           topLeft: Radius.circular(8), topRight: Radius.circular(8)),
       ),

@@ -379,7 +379,7 @@ class _MissionRoomScreenState extends ConsumerState<MissionRoomScreen> {
                     child: Row(
                       mainAxisAlignment: MainAxisAlignment.center,
                       children: [
-                        Container(width: 8, height: 8, decoration: BoxDecoration(color: _tertiaryContainer, shape: BoxShape.circle)),
+                        Container(width: 8, height: 8, decoration: const BoxDecoration(color: _tertiaryContainer, shape: BoxShape.circle)),
                         const SizedBox(width: 8),
                         Text('أحمر', style: GoogleFonts.spaceGrotesk(color: _onSurface, fontSize: 12, fontWeight: FontWeight.bold)),
                       ],
@@ -401,7 +401,7 @@ class _MissionRoomScreenState extends ConsumerState<MissionRoomScreen> {
                     child: Row(
                       mainAxisAlignment: MainAxisAlignment.center,
                       children: [
-                        Container(width: 8, height: 8, decoration: BoxDecoration(color: _secondary, shape: BoxShape.circle)),
+                        Container(width: 8, height: 8, decoration: const BoxDecoration(color: _secondary, shape: BoxShape.circle)),
                         const SizedBox(width: 8),
                         Text('أزرق', style: GoogleFonts.spaceGrotesk(color: _onSurface, fontSize: 12, fontWeight: FontWeight.bold)),
                       ],
@@ -416,9 +416,9 @@ class _MissionRoomScreenState extends ConsumerState<MissionRoomScreen> {
           const SizedBox(height: 8),
           Container(
             padding: const EdgeInsets.symmetric(horizontal: 16),
-            decoration: BoxDecoration(
-              border: const Border(bottom: BorderSide(color: _outlineVariant, width: 2)),
-              color: const Color(0xFF000F20),
+            decoration: const BoxDecoration(
+              border: Border(bottom: BorderSide(color: _outlineVariant, width: 2)),
+              color: Color(0xFF000F20),
             ),
             child: DropdownButtonHideUnderline(
               child: DropdownButton<String>(

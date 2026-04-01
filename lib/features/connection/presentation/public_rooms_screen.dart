@@ -223,7 +223,7 @@ class _PublicRoomsScreenState extends ConsumerState<PublicRoomsScreen> {
             child: Container(
               decoration: BoxDecoration(
                 borderRadius: BorderRadius.circular(20),
-                gradient: LinearGradient(
+                gradient: const LinearGradient(
                   colors: [_surface, Colors.transparent],
                   begin: Alignment.bottomCenter, end: Alignment.topCenter,
                 ),
@@ -486,7 +486,7 @@ class _RoomItem extends StatelessWidget {
                 const SizedBox(height: 6),
                 Row(
                   children: [
-                    Icon(Icons.groups, color: _onSurfaceVariant, size: 14),
+                    const Icon(Icons.groups, color: _onSurfaceVariant, size: 14),
                     const SizedBox(width: 4),
                     Text(players, style: GoogleFonts.spaceGrotesk(color: _onSurfaceVariant, fontSize: 12)),
                     const SizedBox(width: 12),
