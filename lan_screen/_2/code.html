@@ -1,0 +1,308 @@
+<!DOCTYPE html>
+
+<html class="dark" dir="rtl" lang="ar"><head>
+<meta charset="utf-8"/>
+<meta content="width=device-width, initial-scale=1.0" name="viewport"/>
+<title>بروتوكول سايفر - غرفة المهمة</title>
+<script src="https://cdn.tailwindcss.com?plugins=forms,container-queries"></script>
+<link href="https://fonts.googleapis.com/css2?family=Space+Grotesk:wght@300;400;500;600;700&amp;family=Manrope:wght@300;400;500;600;700&amp;family=Plus+Jakarta+Sans:wght@300;400;500;600;700;800&amp;family=Noto+Sans+Arabic:wght@300;400;500;600;700;800&amp;display=swap" rel="stylesheet"/>
+<link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:wght,FILL@100..700,0..1&amp;display=swap" rel="stylesheet"/>
+<script id="tailwind-config">
+      tailwind.config = {
+        darkMode: "class",
+        theme: {
+          extend: {
+            colors: {
+              "outline": "#a38d7c",
+              "inverse-on-surface": "#123250",
+              "secondary-fixed-dim": "#95ceef",
+              "on-error-container": "#ffdad6",
+              "surface-container-lowest": "#000f20",
+              "primary": "#ffb77a",
+              "on-primary-container": "#5d3100",
+              "on-tertiary-container": "#741b00",
+              "secondary-container": "#034f6b",
+              "surface-dim": "#001429",
+              "surface-container-low": "#001d36",
+              "surface-container-highest": "#183655",
+              "on-background": "#d1e4ff",
+              "on-error": "#690005",
+              "secondary-fixed": "#c3e7ff",
+              "on-tertiary": "#5f1500",
+              "on-secondary-fixed": "#001e2c",
+              "error-container": "#93000a",
+              "on-secondary-container": "#87c0e1",
+              "surface-bright": "#1d3b5a",
+              "surface-variant": "#183655",
+              "outline-variant": "#554336",
+              "on-primary-fixed": "#2e1500",
+              "tertiary-fixed": "#ffdbd1",
+              "primary-container": "#f28e26",
+              "tertiary-fixed-dim": "#ffb5a0",
+              "inverse-primary": "#8f4e00",
+              "surface-tint": "#ffb77a",
+              "tertiary": "#ffb5a0",
+              "surface-container-high": "#092b4a",
+              "surface": "#001429",
+              "primary-fixed-dim": "#ffb77a",
+              "on-tertiary-fixed-variant": "#872100",
+              "on-secondary": "#003549",
+              "on-primary-fixed-variant": "#6d3a00",
+              "secondary": "#95ceef",
+              "on-surface-variant": "#dbc2b0",
+              "background": "#001429",
+              "tertiary-container": "#ff835f",
+              "primary-fixed": "#ffdcc2",
+              "on-tertiary-fixed": "#3b0900",
+              "on-secondary-fixed-variant": "#004c69",
+              "error": "#ffb4ab",
+              "inverse-surface": "#d1e4ff",
+              "surface-container": "#00213d",
+              "on-surface": "#d1e4ff",
+              "on-primary": "#4c2700"
+            },
+            fontFamily: {
+              "headline": ["Space Grotesk", "Noto Sans Arabic"],
+              "body": ["Manrope", "Noto Sans Arabic"],
+              "label": ["Plus Jakarta Sans", "Noto Sans Arabic"]
+            },
+            borderRadius: {"DEFAULT": "0.25rem", "lg": "0.5rem", "xl": "0.75rem", "full": "9999px"},
+          },
+        },
+      }
+    </script>
+<style>
+      .material-symbols-outlined {
+        font-variation-settings: 'FILL' 0, 'wght' 400, 'GRAD' 0, 'opsz' 24;
+      }
+      .bg-grid-subtle {
+        background-image: radial-gradient(circle, #183655 1px, transparent 1px);
+        background-size: 30px 30px;
+      }
+      [dir="rtl"] .material-symbols-outlined {
+        display: inline-block;
+      }
+      body {
+        min-height: max(884px, 100dvh);
+      }
+    </style>
+</head>
+<body class="bg-surface text-on-surface font-body min-h-screen selection:bg-primary selection:text-on-primary-container">
+<!-- Top Navigation Anchor -->
+<header class="fixed top-0 z-50 w-full bg-[#001429]/80 backdrop-blur-md shadow-[0_20px_40px_rgba(0,20,41,0.4)]">
+<div class="flex justify-between items-center px-6 py-4 w-full">
+<div class="flex items-center gap-3">
+<span class="material-symbols-outlined text-[#ffb77a]" data-icon="security">security</span>
+<h1 class="font-headline font-bold text-xl tracking-widest uppercase text-[#F28E26]">الأسماء الرمزية</h1>
+</div>
+<div class="flex items-center gap-4">
+<button class="flex items-center gap-2 bg-primary/10 hover:bg-primary/20 text-[#F28E26] border border-[#F28E26]/40 px-4 py-2 rounded-full transition-all active:scale-95 shadow-sm">
+<span class="material-symbols-outlined text-lg" data-icon="favorite" style="font-variation-settings: 'FILL' 1; color: #F28E26;">favorite</span>
+<span class="font-headline font-bold text-sm tracking-wide">إدعمنا</span>
+</button>
+</div>
+</div>
+<div class="bg-[#001d36] h-[1px] w-full"></div>
+</header>
+<main class="pt-24 pb-32 px-4 md:px-8 max-w-7xl mx-auto bg-grid-subtle">
+<!-- Room Code Branding Section (Identical layout to SCREEN_32) -->
+<section class="mb-10 flex flex-col md:flex-row justify-between items-end gap-6">
+<div class="space-y-1 w-full md:w-auto">
+<div class="flex items-center gap-2 text-primary font-label font-extrabold tracking-tighter text-xs uppercase">
+<span class="w-2 h-2 bg-primary rounded-full animate-pulse"></span>
+                    الجهاز مؤمن
+                </div>
+<h2 class="font-headline text-4xl font-bold tracking-tight">غرفة المهمة</h2>
+<p class="text-on-surface-variant font-label text-sm max-w-md">تم إنشاء اتصال مشفر. قم بتكوين فريق التدخل الخاص بك والاستعداد للانتشار.</p>
+</div>
+<div class="bg-surface-container-low p-4 rounded-xl border-r-4 border-primary shadow-lg flex flex-col items-start min-w-[240px] w-full md:w-auto">
+<span class="text-outline text-[10px] font-bold uppercase tracking-widest">رمز الغرفة</span>
+<div class="flex items-center gap-3 mt-1 w-full justify-between">
+<code class="text-primary font-headline text-2xl font-bold tracking-widest" dir="ltr">#CX-992</code>
+<button class="material-symbols-outlined text-on-surface-variant hover:text-primary transition-colors" data-icon="content_copy">content_copy</button>
+</div>
+</div>
+</section>
+<div class="grid grid-cols-1 lg:grid-cols-12 gap-8 items-start">
+<!-- Strike Teams Columns -->
+<div class="lg:col-span-8 grid grid-cols-1 md:grid-cols-2 gap-6">
+<!-- Red Team Column -->
+<div class="flex flex-col gap-4">
+<div class="flex items-center justify-between px-2">
+<div class="flex items-center gap-2">
+<span class="material-symbols-outlined text-tertiary-container" data-icon="local_fire_department" style='font-variation-settings: "FILL" 1;'>local_fire_department</span>
+<h3 class="font-headline text-xl font-bold tracking-wide text-tertiary-container">فريق التدخل الأحمر</h3>
+</div>
+<span class="bg-tertiary-container/20 text-tertiary text-[10px] font-black px-2 py-0.5 rounded-full">3 / 6</span>
+</div>
+<div class="space-y-3">
+<!-- Red Player 1 (Spymaster) -->
+<div class="bg-gradient-to-br from-tertiary-container to-tertiary p-px rounded-xl">
+<div class="bg-surface-container-low p-4 rounded-[11px] flex items-center justify-between">
+<div class="flex items-center gap-4">
+<div class="w-10 h-10 rounded-lg overflow-hidden bg-surface-container-highest flex items-center justify-center">
+<img alt="Avatar" class="w-full h-full object-cover" src="https://lh3.googleusercontent.com/aida-public/AB6AXuDJL7umLsG25aLEJX8JPXn95AASBkMq6e3TkglZngRecaGlEIVE1xKOZwx9IoL2s8OeuJ-pFUX4fdSQv3BNedqeD_FrLXcy2yBXnyiLbAci22vV6njLaxLIkOZnRwLrs9_lG9rdZEJW5EzckukGGtdbRhhrmpygN6XvPocOH18kjqLrnJZHwPaKo7BgTZu0lArvVQgWsgvax-BDHGSt3jlD_1dC4Icl2QCPkJ60Woodg56xWPrkX29woD9elzIYEeujZXzUHoqb_k4"/>
+</div>
+<div>
+<div class="font-headline font-bold text-sm tracking-wide">GHOST_OPS</div>
+<div class="text-[10px] font-black text-tertiary-container uppercase tracking-widest">رئيس الشبكة</div>
+</div>
+</div>
+<span class="material-symbols-outlined text-tertiary-container" data-icon="verified_user" style='font-variation-settings: "FILL" 1;'>verified_user</span>
+</div>
+</div>
+<!-- Red Player 2 -->
+<div class="bg-surface-container-low p-4 rounded-xl flex items-center justify-between group hover:bg-surface-container-high transition-colors">
+<div class="flex items-center gap-4">
+<div class="w-10 h-10 rounded-lg overflow-hidden bg-surface-container-highest flex items-center justify-center">
+<img alt="Avatar" class="w-full h-full object-cover" src="https://lh3.googleusercontent.com/aida-public/AB6AXuD5XC2EY8CokwcXhCly9wMuHez0Caaw_tzm4ZtJYrhuFtqLl0cRYbg43bKjcfl7P4vEVuteoxcEqJvzgGWC4tW-GfOlhvHCPo1adoH-JRKnaT_JWwABNFP3DlfCxLSOfdbzqRV0pfvrEf-7PfnQ8o6lrqArzumFVm2rT4h4ukdSkkR5nlvG6ckrZ6O3zMvs_mE7ikXCez9AX1_qy_dGe8evPhf8e-SZS1NlpDleJYmzmXx-y5rKmQzcAotuAZS9l3UsyI8qtZgA2A4"/>
+</div>
+<div>
+<div class="font-headline font-bold text-sm tracking-wide">SHADOW_REAPER</div>
+<div class="text-[10px] font-black text-on-surface-variant uppercase tracking-widest">عميل ميداني</div>
+</div>
+</div>
+</div>
+<!-- Red Player 3 -->
+<div class="bg-surface-container-low p-4 rounded-xl flex items-center justify-between group hover:bg-surface-container-high transition-colors">
+<div class="flex items-center gap-4">
+<div class="w-10 h-10 rounded-lg overflow-hidden bg-surface-container-highest flex items-center justify-center">
+<img alt="Avatar" class="w-full h-full object-cover" src="https://lh3.googleusercontent.com/aida-public/AB6AXuDyUFkP1HWx4zjP8RaJ5w6AmiYN_zkpVYTMrQGCyIkRf-POsgxbwOugSfk_kJcaw8PIeHsvu7_MAEYT3xf2Bl-h1SXMBSUffX0yfNVLfpkQDXFJPkBcpgO4pwq07-FHS26dlzkkZ8hxHVeBXg9p5hxbCDo59g1eO1zC0ib_xwSnv4kBSvH8G_0H3K8pC26yTs04k08ZsmCB5S3BZVx4uJacl-oBoqpcT-QZChbDDKNXLUmvggmH2QW4rjqkd_bbNkGYyycrxXOVTeM"/>
+</div>
+<div>
+<div class="font-headline font-bold text-sm tracking-wide">VIPER_77</div>
+<div class="text-[10px] font-black text-on-surface-variant uppercase tracking-widest">عميل ميداني</div>
+</div>
+</div>
+</div>
+</div>
+</div>
+<!-- Blue Team Column -->
+<div class="flex flex-col gap-4">
+<div class="flex items-center justify-between px-2">
+<div class="flex items-center gap-2">
+<span class="material-symbols-outlined text-secondary" data-icon="ac_unit" style='font-variation-settings: "FILL" 1;'>ac_unit</span>
+<h3 class="font-headline text-xl font-bold tracking-wide text-secondary">فريق التدخل الأزرق</h3>
+</div>
+<span class="bg-secondary/20 text-secondary text-[10px] font-black px-2 py-0.5 rounded-full">2 / 6</span>
+</div>
+<div class="space-y-3">
+<!-- Blue Player 1 (Spymaster) -->
+<div class="bg-gradient-to-br from-secondary-container to-secondary p-px rounded-xl">
+<div class="bg-surface-container-low p-4 rounded-[11px] flex items-center justify-between">
+<div class="flex items-center gap-4">
+<div class="w-10 h-10 rounded-lg overflow-hidden bg-surface-container-highest flex items-center justify-center">
+<img alt="Avatar" class="w-full h-full object-cover" src="https://lh3.googleusercontent.com/aida-public/AB6AXuDosevNR_6MfW_X8XpvWG2XpJMasC4UmysvMm2sBW2yKDKcHnEPveUHbXTdv0cEoiBrUflIu6NpzEIR3dxCYIzzHCBkcn5jD6iNDDavYGMf1gDZjIvm2fTbh36wIaiaYM2exbmOQ5_mH7wN1vCiNk0zST5Lr7kU6UgYTGufcSLLM5dRtpUHpZFIyBar8feoKBsOVE4but1qysEGlbksQ01rgv5JpUZy0yviqxZfpA594XnQPDZsLEdsACHWbA2DT3EmoZJ-vjJ7Hhs"/>
+</div>
+<div>
+<div class="font-headline font-bold text-sm tracking-wide">ALPHA_WOLF</div>
+<div class="text-[10px] font-black text-secondary uppercase tracking-widest">رئيس الشبكة</div>
+</div>
+</div>
+<span class="material-symbols-outlined text-secondary" data-icon="verified_user" style='font-variation-settings: "FILL" 1;'>verified_user</span>
+</div>
+</div>
+<!-- Blue Player 2 (Local Player / Focused) -->
+<div class="bg-surface-container-highest p-4 rounded-xl flex items-center justify-between ring-2 ring-primary ring-opacity-50">
+<div class="flex items-center gap-4">
+<div class="w-10 h-10 rounded-lg overflow-hidden bg-surface-container-lowest flex items-center justify-center border border-primary/30">
+<img alt="Avatar" class="w-full h-full object-cover" src="https://lh3.googleusercontent.com/aida-public/AB6AXuCTn6jiMOUxRZTfVT5Tr4w3xPkThXOHuw0SYiqVD9Lzu40mvgWfSNNQSUcmI7ylTyzPnASP_fCul6kVS_0Iz9iPYBBIsM3hZML95L2duvYxoAslrIszTe4yi_Cwv3PafGv1l6iRVuGQjg-1mBmKDtZztA9b6s1r_fyUZBHVmOOk9JAvLlLvoyu9TRo3BblNkpWBV5SQcRVRu4YQfepteeuPKyL9PaYGjyyx-RMnU2JwZfU6lFm_ANCQ3UyUUEJeRntZudW87mM8GPc"/>
+</div>
+<div>
+<div class="font-headline font-bold text-sm tracking-wide text-primary">AGENT_YOU (أنت)</div>
+<div class="text-[10px] font-black text-on-surface-variant uppercase tracking-widest">عميل ميداني</div>
+</div>
+</div>
+<span class="bg-primary/10 text-primary text-[8px] font-bold px-1.5 py-0.5 rounded uppercase tracking-tighter">محلي</span>
+</div>
+</div>
+</div>
+</div>
+<!-- Local Settings & Action Sidebar -->
+<div class="lg:col-span-4 space-y-6">
+<!-- Player Config Card -->
+<div class="bg-surface-container-low p-6 rounded-xl space-y-6 border border-outline-variant/10">
+<h4 class="font-headline font-bold text-lg tracking-tight">إعدادات العميل</h4>
+<div class="space-y-4">
+<div class="space-y-2">
+<label class="font-label text-[10px] font-black text-outline uppercase tracking-widest">اختر انتماء الفريق</label>
+<div class="grid grid-cols-2 gap-2">
+<button class="flex items-center justify-center gap-2 py-3 rounded-lg bg-surface-container-high border border-outline-variant/20 hover:border-tertiary-container transition-all group">
+<div class="w-2 h-2 rounded-full bg-tertiary-container"></div>
+<span class="font-headline font-bold text-xs">أحمر</span>
+</button>
+<button class="flex items-center justify-center gap-2 py-3 rounded-lg bg-secondary-container border border-secondary/50 text-secondary transition-all">
+<div class="w-2 h-2 rounded-full bg-secondary shadow-[0_0_8px_rgba(149,206,239,0.5)]"></div>
+<span class="font-headline font-bold text-xs">أزرق</span>
+</button>
+</div>
+</div>
+<div class="space-y-2">
+<label class="font-label text-[10px] font-black text-outline uppercase tracking-widest">الدور التكتيكي</label>
+<div class="relative">
+<select class="w-full bg-surface-container-lowest border-0 border-b-2 border-outline-variant text-on-surface py-3 px-4 font-body text-sm rounded-t-lg focus:ring-0 focus:border-primary transition-all appearance-none cursor-pointer">
+<option>عميل ميداني</option>
+<option>رئيس الشبكة</option>
+</select>
+<span class="material-symbols-outlined absolute left-4 top-1/2 -translate-y-1/2 text-outline pointer-events-none" data-icon="expand_more">expand_more</span>
+</div>
+</div>
+</div>
+<div class="pt-4 border-t border-outline-variant/10">
+<div class="flex items-start gap-3 p-3 bg-surface-container-high/50 rounded-lg">
+<span class="material-symbols-outlined text-primary text-sm mt-0.5" data-icon="info">info</span>
+<p class="text-[11px] text-on-surface-variant leading-relaxed">يقدم رؤساء الشبكة أدلة لفرقهم. مطلوب رئيس شبكة واحد على الأقل لكل فريق للانتشار.</p>
+</div>
+</div>
+</div>
+<!-- Launch Control -->
+<div class="space-y-4">
+<button class="w-full py-5 rounded-full bg-gradient-to-r from-primary to-primary-container text-on-primary-container font-headline font-black text-lg tracking-[0.2em] shadow-xl hover:scale-[1.02] active:scale-95 transition-transform flex items-center justify-center gap-3">
+<span class="material-symbols-outlined" data-icon="rocket_launch">rocket_launch</span>
+                        بدء المهمة
+                    </button><button class="w-full py-4 rounded-full bg-transparent border border-outline-variant/30 text-on-surface-variant hover:bg-error/10 hover:text-error hover:border-error/50 font-headline font-bold text-sm tracking-wide transition-all flex items-center justify-center gap-3 active:scale-95">
+<span class="material-symbols-outlined" data-icon="exit_to_app">exit_to_app</span>
+  الخروج من الغرفة
+</button>
+<!-- Readiness Checklist -->
+<div class="bg-surface-container-lowest/40 rounded-xl p-4 border border-outline-variant/10">
+<h5 class="text-[10px] font-black text-outline uppercase tracking-widest mb-3">جاهزية الانتشار</h5>
+<ul class="space-y-2">
+<li class="flex items-center gap-2 text-xs">
+<span class="material-symbols-outlined text-green-500 text-sm" data-icon="check_circle" style='font-variation-settings: "FILL" 1;'>check_circle</span>
+<span class="text-on-surface-variant">الحد الأدنى من العملاء (5/4)</span>
+</li>
+<li class="flex items-center gap-2 text-xs">
+<span class="material-symbols-outlined text-green-500 text-sm" data-icon="check_circle" style='font-variation-settings: "FILL" 1;'>check_circle</span>
+<span class="text-on-surface-variant">تم تعيين رئيس شبكة للفريق الأحمر</span>
+</li>
+<li class="flex items-center gap-2 text-xs">
+<span class="material-symbols-outlined text-green-500 text-sm" data-icon="check_circle" style='font-variation-settings: "FILL" 1;'>check_circle</span>
+<span class="text-on-surface-variant">تم تعيين رئيس شبكة للفريق الأزرق</span>
+</li>
+</ul>
+</div>
+</div>
+</div>
+</div>
+</main>
+<!-- Navigation Shell (Bottom Navigation Identical to SCREEN_32) -->
+<nav class="fixed bottom-0 w-full z-50 flex justify-around items-center px-4 pb-6 pt-2 bg-[#001d36]/90 backdrop-blur-lg rounded-t-2xl border-t border-[#554336]/10 shadow-[0_-10px_30px_rgba(0,0,0,0.3)] md:hidden">
+<button class="flex flex-col items-center justify-center text-[#554336] opacity-70 hover:text-[#ffb77a] hover:bg-[#183655]/50 transition-all tap-highlight-none active:scale-90">
+<span class="material-symbols-outlined mb-1" data-icon="login">login</span>
+<span class="font-['Manrope'] text-[10px] font-semibold tracking-wide uppercase">الإنضمام</span>
+</button>
+<button class="flex flex-col items-center justify-center bg-[#183655] text-[#ffb77a] rounded-xl px-4 py-1 shadow-inner tap-highlight-none active:scale-90">
+<span class="material-symbols-outlined mb-1" data-icon="groups">groups</span>
+<span class="font-['Manrope'] text-[10px] font-semibold tracking-wide uppercase">الفريق</span>
+</button>
+<button class="flex flex-col items-center justify-center text-[#554336] opacity-70 hover:text-[#ffb77a] hover:bg-[#183655]/50 transition-all tap-highlight-none active:scale-90">
+<span class="material-symbols-outlined mb-1" data-icon="grid_view">grid_view</span>
+<span class="font-['Manrope'] text-[10px] font-semibold tracking-wide uppercase">المهمة</span>
+</button>
+<button class="flex flex-col items-center justify-center text-[#554336] opacity-70 hover:text-[#ffb77a] hover:bg-[#183655]/50 transition-all tap-highlight-none active:scale-90">
+<span class="material-symbols-outlined mb-1" data-icon="terminal">terminal</span>
+<span class="font-['Manrope'] text-[10px] font-semibold tracking-wide uppercase">LOGS</span>
+</button>
+</nav>
+</body></html>

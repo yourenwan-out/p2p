@@ -1,0 +1,51 @@
+name: p2p_codenames
+description: A Flutter app for playing Codenames in local multiplayer mode using IP connection.
+
+publish_to: 'none'
+
+version: 1.0.0+1
+
+environment:
+  sdk: '>=3.0.0 <4.0.0'
+
+dependencies:
+  flutter:
+    sdk: flutter
+
+  # State management
+  flutter_riverpod: ^2.4.9
+
+  # Local database
+  hive: ^2.2.3
+  hive_flutter: ^1.1.0
+
+  # JSON serialization
+  json_annotation: ^4.8.1
+  freezed_annotation: ^2.4.1
+
+  # Routing
+  go_router: ^12.1.3
+
+  # Responsive UI
+  flutter_screenutil: ^5.9.0
+
+  # Logging
+  logger: ^2.0.2+1
+
+  # Google Fonts (auto-downloads: Space Grotesk, Noto Sans Arabic, IBM Plex Sans Arabic, Manrope)
+  google_fonts: ^6.2.1
+  appwrite: ^23.0.0
+
+dev_dependencies:
+  flutter_test:
+    sdk: flutter
+
+  flutter_lints: ^3.0.0
+
+  # Code generation for JSON and Freezed
+  build_runner: ^2.4.7
+  json_serializable: ^6.7.1
+  freezed: ^2.4.6
+
+flutter:
+  uses-material-design: true
