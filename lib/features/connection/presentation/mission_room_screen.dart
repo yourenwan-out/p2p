@@ -1,17 +1,18 @@
 // ignore_for_file: deprecated_member_use
 import 'dart:convert';
-import 'package:appwrite/appwrite.dart';
+import 'package:appwrite/appwrite.dart' hide Role;
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:google_fonts/google_fonts.dart';
 import 'package:go_router/go_router.dart';
 import 'package:flutter/services.dart';
 
-import '../../../../core/appwrite/appwrite_providers.dart';
-import '../../../../core/appwrite/appwrite_room_service.dart';
-import '../../../../core/network/connection_provider.dart';
-import '../../../game_board/providers/game_provider.dart';
-import '../../../game_board/models/player.dart';
+import 'package:p2p_codenames/core/appwrite/appwrite_providers.dart';
+import 'package:p2p_codenames/core/appwrite/appwrite_room_service.dart';
+import 'package:p2p_codenames/core/network/connection_provider.dart';
+import 'package:p2p_codenames/features/game_board/providers/game_provider.dart';
+import 'package:p2p_codenames/features/game_board/models/player.dart';
+import 'package:p2p_codenames/features/game_board/models/game_state.dart';
 
 const _surface = Color(0xFF001429);
 const _surfaceContainerLow = Color(0xFF001D36);
@@ -235,7 +236,7 @@ class _MissionRoomScreenState extends ConsumerState<MissionRoomScreen> {
                     const SizedBox(height: 24),
                     _buildTeamSection('فريق التدخل الأزرق', blueTeam, maxPlayers ~/ 2, _secondary, _secondaryContainer, Icons.ac_unit),
                     const SizedBox(height: 32),
-                    _buildAgentSettings(myTeam, myRole),
+                    _buildAgentSettings(myTeam, myRole, hasRedSpymaster, hasBlueSpymaster),
                     const SizedBox(height: 32),
                     _buildLaunchControl(minClientsReached, hasRedSpymaster, hasBlueSpymaster),
                     const SizedBox(height: 100),
@@ -393,7 +394,7 @@ class _MissionRoomScreenState extends ConsumerState<MissionRoomScreen> {
     );
   }
 
-  Widget _buildAgentSettings(String myTeam, String myRole) {
+  Widget _buildAgentSettings(String myTeam, String myRole, bool hasRedSpymaster, bool hasBlueSpymaster) {
     return Container(
       padding: const EdgeInsets.all(24),
       decoration: BoxDecoration(

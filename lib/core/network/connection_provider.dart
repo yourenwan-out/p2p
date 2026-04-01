@@ -1,5 +1,5 @@
 import 'dart:convert';
-import 'package:appwrite/appwrite.dart';
+import 'package:appwrite/appwrite.dart' hide Role;
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:logger/logger.dart';
 import '../../features/game_board/models/player.dart';
