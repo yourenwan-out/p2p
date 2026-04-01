@@ -14,7 +14,7 @@ class AppwriteRoomService {
   final Databases _databases;
   final Realtime _realtime;
 
-  static const String databaseId = '69ccd7f98036a2e58f2c';
+  static const String databaseId = '69ccd7f90036a2e58f2c';
   static const String roomsCollectionId = 'rooms';
 
   AppwriteRoomService(this._databases, this._realtime);
