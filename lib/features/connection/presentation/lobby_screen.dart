@@ -498,7 +498,7 @@ class _LobbyScreenState extends ConsumerState<LobbyScreen> {
       decoration: const BoxDecoration(
         color: _surfaceContainerLowest,
         border: Border(bottom: BorderSide(color: _outlineVariant, width: 2)),
-        borderRadius: const BorderRadius.only(
+        borderRadius: BorderRadius.only(
           topLeft: Radius.circular(8), topRight: Radius.circular(8)),
       ),
       child: DropdownButtonHideUnderline(
