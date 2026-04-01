@@ -51,22 +51,4 @@ class IPUtils {
             if (_isPreferred(addr.address)) {
               _logger.i('Network IP: ${addr.address} on ${interface.name}');
               return addr.address;
-            }
-            fallback ??= addr.address;
-          }
-        }
-      }
-
-      if (fallback != null) {
-        _logger.w('Using fallback IP: $fallback');
-        return fallback;
-      }
-
-      _logger.w('No suitable IPv4 address found');
-      return null;
-    } catch (e) {
-      _logger.e('Error retrieving IP address: $e');
-      return null;
-    }
-  }
-}
+ 
