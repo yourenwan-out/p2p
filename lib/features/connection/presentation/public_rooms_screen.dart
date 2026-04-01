@@ -18,7 +18,7 @@ const _secondary = Color(0xFF95CEEF);
 const _secondaryContainer = Color(0xFF034F6B);
 const _tertiary = Color(0xFFFFB5A0);
 const _tertiaryContainer = Color(0xFFFF835F);
-const _outline = Color(0xFFA38D7C);
+
 const _outlineVariant = Color(0xFF554336);
 const _onSurface = Color(0xFFD1E4FF);
 const _onSurfaceVariant = Color(0xFFDBC2B0);

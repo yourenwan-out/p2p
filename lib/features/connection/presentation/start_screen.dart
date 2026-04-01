@@ -24,8 +24,7 @@ const _outline = Color(0xFFA38D7C);
 const _outlineVariant = Color(0xFF554336);
 const _onSurface = Color(0xFFD1E4FF);
 const _onSurfaceVariant = Color(0xFFDBC2B0);
-const _onPrimaryContainer = Color(0xFF5D3100);
-const _onSecondary = Color(0xFF003549);
+
 
 class StartScreen extends ConsumerStatefulWidget {
   const StartScreen({super.key});
