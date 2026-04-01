@@ -8,6 +8,7 @@ import '../suites/validator_tests.dart';
 import '../suites/storage_tests.dart';
 import '../suites/edge_case_tests.dart';
 import '../suites/state_tests.dart';
+import '../suites/appwrite_tests.dart';
 
 // ─── Design System Colors ─────────────────────────────────────────────────────
 const _surface = Color(0xFF001429);
@@ -43,6 +44,8 @@ const _testDisplayNames = <String, String>{
   'State: Game state updates':   'STATE_MACHINE / STATE_SYNC',
   'Edge Cases: Rapid Clicking':  'EDGE_CASES_VOL4 / BYZANTINE_FLOOD',
   'Edge Cases: Rogue Client':    'EDGE_CASES_VOL4 / ROGUE_CLIENT',
+  'Appwrite: Client Initialization': 'GLOBAL_NETWORK / CLIENT_INIT',
+  'Appwrite: Room Service Injection':'GLOBAL_NETWORK / SERVICE_INJECT',
 };
 
 // Map internal test names to suite groups for section headers
@@ -63,6 +66,8 @@ const _suiteGroups = <String, String>{
   'State: Game state updates':   'STATE_MACHINE',
   'Edge Cases: Rapid Clicking':  'EDGE_CASES_VOL4',
   'Edge Cases: Rogue Client':    'EDGE_CASES_VOL4',
+  'Appwrite: Client Initialization': 'GLOBAL_NETWORK',
+  'Appwrite: Room Service Injection': 'GLOBAL_NETWORK',
 };
 
 class TestRunnerScreen extends ConsumerStatefulWidget {
@@ -101,6 +106,8 @@ class _TestRunnerScreenState extends ConsumerState<TestRunnerScreen> {
         TestResult(name: 'State: Game state updates'),
         TestResult(name: 'Edge Cases: Rapid Clicking'),
         TestResult(name: 'Edge Cases: Rogue Client'),
+        TestResult(name: 'Appwrite: Client Initialization'),
+        TestResult(name: 'Appwrite: Room Service Injection'),
       ];
     });
   }
@@ -126,6 +133,7 @@ class _TestRunnerScreenState extends ConsumerState<TestRunnerScreen> {
       () => StorageTests.run(),
       () => StateTests.run(),
       () => EdgeCaseTests.run(),
+      () => AppwriteTests.run(),
     ];
 
     for (var suiteFn in suites) {
@@ -268,6 +276,7 @@ class _TestRunnerScreenState extends ConsumerState<TestRunnerScreen> {
       'STORAGE': const Color(0xFF6FAF8D),
       'STATE_MACHINE': _onSurface,
       'EDGE_CASES_VOL4': _primaryContainer,
+      'GLOBAL_NETWORK': _secondary,
     };
 
     return Column(
