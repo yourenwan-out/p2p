@@ -1,6 +1,7 @@
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import '../models/test_result.dart';
 import '../../../../core/appwrite/appwrite_providers.dart';
+import '../../../../core/appwrite/appwrite_room_service.dart';
 
 class AppwriteTests {
   static Future<List<TestResult>> run() async {
@@ -16,8 +17,6 @@ class AppwriteTests {
       final container = ProviderContainer();
       final client = container.read(appwriteClientProvider);
       if (client.endPoint.isEmpty) throw Exception('Endpoint is empty');
-      // The getter is actually project in the dart sdk? Or maybe we just check client is not null
-      if (client == null) throw Exception('Client is null');
 
       return TestResult(
         name: 'Appwrite: Client Initialization',

@@ -17,7 +17,7 @@ const _surfaceContainerHigh = Color(0xFF092B4A);
 const _surfaceContainerHighest = Color(0xFF183655);
 const _primary = Color(0xFFFFB77A);
 const _primaryContainer = Color(0xFFF28E26);
-// _secondary reserved for future use
+const _secondary = Color(0xFF95CEEF);
 const _outline = Color(0xFFA38D7C);
 const _outlineVariant = Color(0xFF554336);
 const _onSurface = Color(0xFFD1E4FF);
