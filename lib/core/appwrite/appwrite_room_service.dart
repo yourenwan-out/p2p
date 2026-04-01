@@ -195,7 +195,11 @@ class AppwriteRoomService {
           Query.orderDesc('\$createdAt'),
         ],
       );
-      return res.documents.map((d) => {'id': d.\$id, ...d.data}).toList();
+      return res.documents.map((d) {
+        final map = Map<String, dynamic>.from(d.data);
+        map['id'] = d.$id;
+        return map;
+      }).toList();
     } catch (e) {
       return [];
     }
@@ -212,7 +216,7 @@ class AppwriteRoomService {
         ],
       );
       if (res.documents.isNotEmpty) {
-        return res.documents.first.\$id;
+        return res.documents.first.$id;
       }
       return null;
     } catch (e) {

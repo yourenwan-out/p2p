@@ -92,8 +92,7 @@ class _RoomSettingsScreenState extends ConsumerState<RoomSettingsScreen> {
       if (mounted) {
         Navigator.pushReplacement(
           context, 
-          // Defaulting parameters until MissionRoomScreen signature is fully converted
-          MaterialPageRoute(builder: (_) => MissionRoomScreen())
+          MaterialPageRoute(builder: (_) => MissionRoomScreen(roomId: roomId, isHost: true))
         );
       }
     } on AppwriteException catch (e) {
