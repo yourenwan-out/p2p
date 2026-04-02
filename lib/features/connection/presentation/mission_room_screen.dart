@@ -4,7 +4,6 @@ import 'package:appwrite/appwrite.dart' hide Role;
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:google_fonts/google_fonts.dart';
-import 'package:go_router/go_router.dart';
 import 'package:flutter/services.dart';
 
 import 'package:p2p_codenames/core/appwrite/appwrite_providers.dart';
@@ -13,6 +12,7 @@ import 'package:p2p_codenames/core/network/connection_provider.dart';
 import 'package:p2p_codenames/features/game_board/providers/game_provider.dart';
 import 'package:p2p_codenames/features/game_board/models/player.dart';
 import 'package:p2p_codenames/features/game_board/models/game_state.dart';
+import 'package:p2p_codenames/features/game_board/presentation/game_board_screen.dart';
 
 const _surface = Color(0xFF001429);
 const _surfaceContainerLow = Color(0xFF001D36);
@@ -88,7 +88,10 @@ class _MissionRoomScreenState extends ConsumerState<MissionRoomScreen> {
              );
 
              if (mounted) {
-               context.go('/game');
+               Navigator.pushReplacement(
+                 context,
+                 MaterialPageRoute(builder: (_) => const GameBoardScreen()),
+               );
              }
           }
         }
