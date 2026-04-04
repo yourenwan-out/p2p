@@ -1,3 +1,4 @@
+import 'dart:async';
 import 'dart:convert';
 import 'package:appwrite/appwrite.dart' hide Role;
 import 'package:flutter_riverpod/flutter_riverpod.dart';
@@ -69,6 +70,7 @@ class ConnectionState {
 class ConnectionNotifier extends StateNotifier<ConnectionState> {
   final Logger _logger = Logger();
   final Ref ref;
+  Timer? _heartbeatTimer;
 
   ConnectionNotifier(this.ref) : super(const ConnectionState());
 
@@ -125,6 +127,16 @@ class ConnectionNotifier extends StateNotifier<ConnectionState> {
 
     state = state.copyWith(appwriteSubscription: subscription);
     _logger.i('Joined Appwrite game successfully. Subscribed to Room: $roomId');
+
+    // Start heartbeat timer: Updates last_activity every 60 seconds
+    _heartbeatTimer?.cancel();
+    _heartbeatTimer = Timer.periodic(const Duration(seconds: 60), (_) {
+      try {
+        ref.read(appwriteRoomServiceProvider).updateHeartbeat(roomId);
+      } catch (e) {
+        _logger.w('Heartbeat failed: $e');
+      }
+    });
   }
 
   Future<void> _pushGameStateToAppwrite() async {
@@ -202,9 +214,12 @@ class ConnectionNotifier extends StateNotifier<ConnectionState> {
   }
 
   void disconnect() {
+    _heartbeatTimer?.cancel();
+    _heartbeatTimer = null;
+    
+    state.appwriteSubscription?.close();
     state.socketHost?.stopServer();
     state.socketClient?.disconnect();
-    state.appwriteSubscription?.close();
     state = const ConnectionState();
     _logger.i('Disconnected');
   }

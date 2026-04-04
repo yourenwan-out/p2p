@@ -243,6 +243,27 @@ class AppwriteRoomService {
     }
   }
 
+  /// Updates the room document to simulate a heartbeat, keeping $updatedAt fresh
+  Future<void> updateHeartbeat(String roomId) async {
+    try {
+      // Fetch current status to update it with the same value, 
+      // triggering Appwrite's internal $updatedAt change
+      final doc = await _databases.getDocument(
+        databaseId: databaseId,
+        collectionId: roomsCollectionId,
+        documentId: roomId,
+      );
+      await _databases.updateDocument(
+        databaseId: databaseId,
+        collectionId: roomsCollectionId,
+        documentId: roomId,
+        data: {'status': doc.data['status'] ?? 'active'},
+      );
+    } catch (_) {
+      // Ignore heartbeat errors
+    }
+  }
+
   /// Deletes a room explicitly (called when game ends or host leaves)
   Future<void> deleteRoom(String roomId) async {
     try {
@@ -256,17 +277,17 @@ class AppwriteRoomService {
     }
   }
 
-  /// Cleans up stale rooms older than 3 hours or stuck in 'active' status
+  /// Cleans up stale rooms older than 5 minutes based on Appwrite's built-in $updatedAt timestamp
   Future<void> cleanupOldRooms() async {
     try {
-      final cutoff = DateTime.now().subtract(const Duration(hours: 3));
+      final cutoff = DateTime.now().subtract(const Duration(minutes: 5));
       final cutoffIso = cutoff.toUtc().toIso8601String();
 
       final res = await _databases.listDocuments(
         databaseId: databaseId,
         collectionId: roomsCollectionId,
         queries: [
-          Query.lessThan('\$createdAt', cutoffIso),
+          Query.lessThan('\$updatedAt', cutoffIso),
         ],
       );
 
