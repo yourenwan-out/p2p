@@ -36,6 +36,9 @@ class AppwriteRoomService {
     };
 
     try {
+      // Clean up stale rooms before creating a new one
+      await cleanupOldRooms();
+
       final document = await _databases.createDocument(
         databaseId: databaseId,
         collectionId: roomsCollectionId,
@@ -237,6 +240,49 @@ class AppwriteRoomService {
       return null;
     } catch (e) {
       return null;
+    }
+  }
+
+  /// Deletes a room explicitly (called when game ends or host leaves)
+  Future<void> deleteRoom(String roomId) async {
+    try {
+      await _databases.deleteDocument(
+        databaseId: databaseId,
+        collectionId: roomsCollectionId,
+        documentId: roomId,
+      );
+    } catch (e) {
+      // Ignore if already deleted
+    }
+  }
+
+  /// Cleans up stale rooms older than 3 hours or stuck in 'active' status
+  Future<void> cleanupOldRooms() async {
+    try {
+      final cutoff = DateTime.now().subtract(const Duration(hours: 3));
+      final cutoffIso = cutoff.toUtc().toIso8601String();
+
+      final res = await _databases.listDocuments(
+        databaseId: databaseId,
+        collectionId: roomsCollectionId,
+        queries: [
+          Query.lessThan('\$createdAt', cutoffIso),
+        ],
+      );
+
+      for (final doc in res.documents) {
+        try {
+          await _databases.deleteDocument(
+            databaseId: databaseId,
+            collectionId: roomsCollectionId,
+            documentId: doc.$id,
+          );
+        } catch (_) {
+          // Skip if already deleted
+        }
+      }
+    } catch (e) {
+      // Cleanup is best-effort; don't block room creation on failure
     }
   }
 

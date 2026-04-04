@@ -24,6 +24,10 @@ class GameState with _$GameState {
     @Default(0) int remainingGuesses,
     @Default(false) bool isGameOver,
     Team? winner,
+    @Default(0) int redScore,
+    @Default(0) int blueScore,
+    // Last card reveal result for UI feedback
+    CardColor? lastRevealedColor,
   }) = _GameState;
 
   factory GameState.fromJson(Map<String, dynamic> json) =>

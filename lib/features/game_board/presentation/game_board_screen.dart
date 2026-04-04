@@ -1,6 +1,8 @@
+import 'dart:convert';
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:google_fonts/google_fonts.dart';
+import 'package:p2p_codenames/core/appwrite/appwrite_room_service.dart';
 import 'package:p2p_codenames/core/network/connection_provider.dart';
 import 'package:p2p_codenames/features/game_board/providers/game_provider.dart';
 import 'package:p2p_codenames/features/game_board/models/game_state.dart';
@@ -39,6 +41,7 @@ class GameBoardScreen extends ConsumerStatefulWidget {
 class _GameBoardScreenState extends ConsumerState<GameBoardScreen> {
   final TextEditingController _clueWordCtrl = TextEditingController();
   int _clueNumber = 1;
+  CardColor? _lastShownResult; // tracks which result we've already shown
 
   @override
   void dispose() {
@@ -62,6 +65,16 @@ class _GameBoardScreenState extends ConsumerState<GameBoardScreen> {
     setState(() => _clueNumber = 1);
   }
 
+  Future<void> _handleExitGame() async {
+    final connState = ref.read(connectionProvider);
+    ref.read(connectionProvider.notifier).disconnect();
+    // If Appwrite room and host => delete the room
+    if (connState.appwriteRoomId != null && connState.isHost) {
+      await ref.read(appwriteRoomServiceProvider).deleteRoom(connState.appwriteRoomId!);
+    }
+    if (mounted) Navigator.pop(context);
+  }
+
   @override
   Widget build(BuildContext context) {
     final gameState = ref.watch(gameProvider);
@@ -80,11 +93,22 @@ class _GameBoardScreenState extends ConsumerState<GameBoardScreen> {
     final redLeft = 9 - gameState.cards.where((c) => c.color == CardColor.red && c.isRevealed).length;
     final blueLeft = 8 - gameState.cards.where((c) => c.color == CardColor.blue && c.isRevealed).length;
 
+    // Show card reveal result snackbar for operatives
+    if (localPlayer?.role == Role.operative &&
+        gameState.lastRevealedColor != null &&
+        gameState.lastRevealedColor != _lastShownResult) {
+      _lastShownResult = gameState.lastRevealedColor;
+      WidgetsBinding.instance.addPostFrameCallback((_) {
+        if (!mounted) return;
+        _showRevealResult(gameState.lastRevealedColor!, localPlayer!);
+      });
+    }
+
     // ignore: deprecated_member_use
     return WillPopScope(
       onWillPop: () async {
-        ref.read(connectionProvider.notifier).disconnect();
-        return true;
+        await _handleExitGame();
+        return false;
       },
       child: Scaffold(
         backgroundColor: _surface,
@@ -99,6 +123,7 @@ class _GameBoardScreenState extends ConsumerState<GameBoardScreen> {
             Column(
               children: [
                 _buildHeader(localPlayer, gameState, redLeft, blueLeft),
+                _buildPlayerHUD(localPlayer, gameState),
                 if (!gameState.isGameOver)
                   _buildControlZone(localPlayer, gameState, notifier),
                 if (isSpymaster)
@@ -116,15 +141,129 @@ class _GameBoardScreenState extends ConsumerState<GameBoardScreen> {
     );
   }
 
+  void _showRevealResult(CardColor color, Player localPlayer) {
+    final myTeam = localPlayer.team;
+    String message;
+    Color bgColor;
+    IconData icon;
+
+    switch (color) {
+      case CardColor.red:
+        if (myTeam == Team.red) {
+          message = '✅ أصبت! بطاقة فريقك الأحمر';
+          bgColor = const Color(0xFFFF835F);
+          icon = Icons.check_circle;
+        } else {
+          message = '⚠️ خسارة! أعطيت نقطة للفريق الأحمر';
+          bgColor = Colors.deepOrange.shade800;
+          icon = Icons.warning;
+        }
+      case CardColor.blue:
+        if (myTeam == Team.blue) {
+          message = '✅ أصبت! بطاقة فريقك الأزرق';
+          bgColor = const Color(0xFF034F6B);
+          icon = Icons.check_circle;
+        } else {
+          message = '⚠️ خسارة! أعطيت نقطة للفريق الأزرق';
+          bgColor = Colors.blue.shade900;
+          icon = Icons.warning;
+        }
+      case CardColor.neutral:
+        message = '😐 بياتي محايد - انتهى دورك';
+        bgColor = const Color(0xFF554336);
+        icon = Icons.block;
+      case CardColor.assassin:
+        message = '💀 القاتل! خسر فريقك اللعبة';
+        bgColor = Colors.black;
+        icon = Icons.dangerous;
+    }
+
+    ScaffoldMessenger.of(context).showSnackBar(SnackBar(
+      content: Row(children: [
+        Icon(icon, color: Colors.white, size: 18),
+        const SizedBox(width: 10),
+        Expanded(child: Text(message,
+          style: GoogleFonts.notoSansArabic(
+            color: Colors.white, fontWeight: FontWeight.bold, fontSize: 13))),
+      ]),
+      backgroundColor: bgColor,
+      duration: const Duration(seconds: 3),
+      behavior: SnackBarBehavior.floating,
+      shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(12)),
+      margin: const EdgeInsets.all(12),
+    ));
+  }
+
   Widget _glow(Color c, double size) => Container(
     width: size, height: size,
     decoration: BoxDecoration(shape: BoxShape.circle,
       boxShadow: [BoxShadow(color: c, blurRadius: 120, spreadRadius: 40)]),
   );
 
+  // ─── PLAYER HUD ────────────────────────────────────────────────────────────
+  Widget _buildPlayerHUD(Player? localPlayer, GameState gameState) {
+    if (localPlayer == null) return const SizedBox.shrink();
+
+    final isMyTurn = localPlayer.team == gameState.currentTurn;
+    final isRed = localPlayer.team == Team.red;
+    final teamColor = isRed ? _tertiaryContainer : _secondary;
+    final teamBg = isRed
+        ? _tertiaryContainer.withValues(alpha: 0.15)
+        : _secondaryContainer.withValues(alpha: 0.4);
+    final teamName = isRed ? 'الفريق الأحمر 🔴' : 'الفريق الأزرق 🔵';
+    final roleName = localPlayer.role == Role.spymaster ? 'رئيس الشبكة 🔍' : 'عميل ميداني 🕵️';
+
+    return Container(
+      width: double.infinity,
+      padding: const EdgeInsets.symmetric(horizontal: 12, vertical: 6),
+      decoration: BoxDecoration(
+        color: teamBg,
+        border: Border(
+          bottom: BorderSide(color: teamColor.withValues(alpha: 0.4), width: 1.5),
+          right: BorderSide(color: teamColor, width: 4),
+        ),
+      ),
+      child: Row(
+        children: [
+          Container(
+            width: 10, height: 10,
+            decoration: BoxDecoration(
+              color: isMyTurn ? Colors.greenAccent : Colors.grey,
+              shape: BoxShape.circle,
+              boxShadow: isMyTurn ? [BoxShadow(color: Colors.greenAccent.withValues(alpha: 0.5), blurRadius: 6)] : null,
+            ),
+          ),
+          const SizedBox(width: 8),
+          Text('$teamName  —  $roleName',
+            style: GoogleFonts.notoSansArabic(
+              color: teamColor, fontSize: 11, fontWeight: FontWeight.bold)),
+          const Spacer(),
+          Container(
+            padding: const EdgeInsets.symmetric(horizontal: 8, vertical: 3),
+            decoration: BoxDecoration(
+              color: isMyTurn
+                  ? Colors.greenAccent.withValues(alpha: 0.15)
+                  : _surfaceContainerHighest,
+              borderRadius: BorderRadius.circular(999),
+              border: Border.all(
+                color: isMyTurn ? Colors.greenAccent : _outlineVariant,
+                width: 1,
+              ),
+            ),
+            child: Text(
+              isMyTurn ? '🟢 دورك الآن' : '⏳ انتظر دورك',
+              style: GoogleFonts.notoSansArabic(
+                color: isMyTurn ? Colors.greenAccent : _onSurfaceVariant,
+                fontSize: 10, fontWeight: FontWeight.bold),
+            ),
+          ),
+        ],
+      ),
+    );
+  }
+
   // ─── HEADER ────────────────────────────────────────────────────────────────
   Widget _buildHeader(Player? localPlayer, GameState gameState, int redLeft, int blueLeft) {
-
     return Container(
       color: _surfaceContainer.withValues(alpha: 0.97),
       child: SafeArea(
@@ -132,17 +271,14 @@ class _GameBoardScreenState extends ConsumerState<GameBoardScreen> {
         child: Column(
           children: [
             Padding(
-              padding: const EdgeInsets.symmetric(horizontal: 16, vertical: 12),
+              padding: const EdgeInsets.symmetric(horizontal: 16, vertical: 10),
               child: Row(
                 mainAxisAlignment: MainAxisAlignment.spaceBetween,
                 children: [
                   Row(children: [
                     IconButton(
                       icon: const Icon(Icons.arrow_back, color: _onSurfaceVariant, size: 20),
-                      onPressed: () {
-                        ref.read(connectionProvider.notifier).disconnect();
-                        Navigator.pop(context);
-                      },
+                      onPressed: _handleExitGame,
                     ),
                     Column(crossAxisAlignment: CrossAxisAlignment.start, children: [
                       Row(children: [
@@ -158,58 +294,49 @@ class _GameBoardScreenState extends ConsumerState<GameBoardScreen> {
                           color: _outline, fontSize: 10, letterSpacing: 2)),
                     ]),
                   ]),
-                  Container(
-                    padding: const EdgeInsets.symmetric(horizontal: 16, vertical: 8),
-                    decoration: BoxDecoration(
-                      color: _surfaceContainerHighest.withValues(alpha: 0.4),
-                      borderRadius: BorderRadius.circular(999),
-                      border: Border.all(color: _primary.withValues(alpha: 0.3))),
-                    child: Row(children: [
-                      const Icon(Icons.favorite, color: _primaryContainer, size: 16),
-                      const SizedBox(width: 6),
-                      Text('إدعمنا',
-                        style: GoogleFonts.notoSansArabic(
-                          color: _onSurface, fontWeight: FontWeight.bold, fontSize: 13)),
-                    ]),
-                  ),
-                ],
-              ),
-            ),
-            // Score row
-            Padding(
-              padding: const EdgeInsets.symmetric(horizontal: 12),
-              child: Row(
-                children: [
-                  Expanded(child: _scoreChip('الأصول الحمراء', redLeft, _tertiary, _tertiaryContainer)),
-                  const SizedBox(width: 8),
-                  Expanded(child: _scoreChip('الأصول الزرقاء', blueLeft, _secondary, _secondaryContainer)),
-                ],
-              ),
-            ),
-            // Status bar
-            Container(
-              padding: const EdgeInsets.symmetric(horizontal: 12, vertical: 6),
-              color: _surfaceContainerLowest.withValues(alpha: 0.5),
-              child: Row(
-                mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                children: [
+                  // Score display: red vs blue
                   Row(children: [
-                    container(7, 7, _primary, BoxShape.circle, animate: true),
-                    const SizedBox(width: 6),
-                    Text('الرقابة التكتيكية نشطة',
-                      style: GoogleFonts.notoSansArabic(
-                        color: _outline, fontSize: 9, fontWeight: FontWeight.w700,
-                        letterSpacing: 1.5)),
+                    _miniScore(gameState.redScore, _tertiaryContainer, '🔴'),
+                    Padding(
+                      padding: const EdgeInsets.symmetric(horizontal: 6),
+                      child: Text('vs', style: GoogleFonts.spaceGrotesk(
+                        color: _outline, fontSize: 12))),
+                    _miniScore(gameState.blueScore, _secondary, '🔵'),
                   ]),
-                  Text('بث شبكي مشفر 5x5. تجنب الجهاز الأسود.',
-                    style: GoogleFonts.notoSansArabic(
-                      color: _onSurfaceVariant.withValues(alpha: 0.8), fontSize: 9)),
+                ],
+              ),
+            ),
+            // Cards remaining row
+            Padding(
+              padding: const EdgeInsets.fromLTRB(12, 0, 12, 8),
+              child: Row(
+                children: [
+                  Expanded(child: _scoreChip('متبقي للأحمر', redLeft, _tertiary, _tertiaryContainer)),
+                  const SizedBox(width: 8),
+                  Expanded(child: _scoreChip('متبقي للأزرق', blueLeft, _secondary, _secondaryContainer)),
                 ],
               ),
             ),
           ],
         ),
       ),
+    );
+  }
+
+  Widget _miniScore(int score, Color color, String emoji) {
+    return Container(
+      padding: const EdgeInsets.symmetric(horizontal: 10, vertical: 6),
+      decoration: BoxDecoration(
+        color: color.withValues(alpha: 0.12),
+        borderRadius: BorderRadius.circular(8),
+        border: Border.all(color: color.withValues(alpha: 0.3)),
+      ),
+      child: Row(children: [
+        Text(emoji, style: const TextStyle(fontSize: 12)),
+        const SizedBox(width: 4),
+        Text('$score', style: GoogleFonts.spaceGrotesk(
+          color: color, fontSize: 16, fontWeight: FontWeight.w900)),
+      ]),
     );
   }
 
@@ -528,25 +655,66 @@ class _GameBoardScreenState extends ConsumerState<GameBoardScreen> {
           textAlign: TextAlign.center,
           style: GoogleFonts.spaceGrotesk(
             color: Colors.white, fontSize: 20, fontWeight: FontWeight.bold)),
-        if (connectionState.isHost) ...[
-          const SizedBox(height: 12),
+        const SizedBox(height: 6),
+        Text(
+          'النقاط النهائية — أحمر: ${gameState.redScore}  |  أزرق: ${gameState.blueScore}',
+          textAlign: TextAlign.center,
+          style: GoogleFonts.notoSansArabic(
+            color: Colors.white.withValues(alpha: 0.85), fontSize: 13)),
+        const SizedBox(height: 16),
+        Row(mainAxisAlignment: MainAxisAlignment.center, children: [
+          // New game (host only)
+          if (connectionState.isHost)
+            GestureDetector(
+              onTap: () async {
+                ref.read(gameProvider.notifier).resetGame();
+                await Future.delayed(const Duration(milliseconds: 50));
+                // Push fresh state to Appwrite
+                final connState = ref.read(connectionProvider);
+                if (connState.appwriteRoomId != null) {
+                  final roomService = ref.read(appwriteRoomServiceProvider);
+                  final newState = ref.read(gameProvider).toJson();
+                  final jsonStr = jsonEncode(newState);
+                  await roomService.updateGameState(connState.appwriteRoomId!, jsonStr);
+                } else {
+                  connectionState.socketHost?.broadcastGameState(ref.read(gameProvider));
+                }
+              },
+              child: Container(
+                padding: const EdgeInsets.symmetric(horizontal: 20, vertical: 12),
+                decoration: BoxDecoration(
+                  color: Colors.white.withValues(alpha: 0.2),
+                  borderRadius: BorderRadius.circular(999),
+                  border: Border.all(color: Colors.white.withValues(alpha: 0.5))),
+                child: Row(mainAxisSize: MainAxisSize.min, children: [
+                  const Icon(Icons.refresh, color: Colors.white, size: 16),
+                  const SizedBox(width: 6),
+                  Text('إعادة اللعب',
+                    style: GoogleFonts.notoSansArabic(
+                      color: Colors.white, fontWeight: FontWeight.bold, fontSize: 13)),
+                ]),
+              ),
+            ),
+          const SizedBox(width: 12),
+          // Exit game button
           GestureDetector(
-            onTap: () {
-              ref.read(gameProvider.notifier).resetGame();
-              connectionState.socketHost?.broadcastGameState(ref.read(gameProvider));
-            },
+            onTap: _handleExitGame,
             child: Container(
-              padding: const EdgeInsets.symmetric(horizontal: 24, vertical: 12),
+              padding: const EdgeInsets.symmetric(horizontal: 20, vertical: 12),
               decoration: BoxDecoration(
-                color: Colors.white.withValues(alpha: 0.2),
+                color: Colors.black.withValues(alpha: 0.25),
                 borderRadius: BorderRadius.circular(999),
-                border: Border.all(color: Colors.white.withValues(alpha: 0.5))),
-              child: Text('إعادة اللعب',
-                style: GoogleFonts.notoSansArabic(
-                  color: Colors.white, fontWeight: FontWeight.bold, fontSize: 14)),
+                border: Border.all(color: Colors.white.withValues(alpha: 0.3))),
+              child: Row(mainAxisSize: MainAxisSize.min, children: [
+                const Icon(Icons.exit_to_app, color: Colors.white, size: 16),
+                const SizedBox(width: 6),
+                Text('الخروج',
+                  style: GoogleFonts.notoSansArabic(
+                    color: Colors.white, fontWeight: FontWeight.bold, fontSize: 13)),
+              ]),
             ),
           ),
-        ],
+        ]),
       ]),
     );
   }

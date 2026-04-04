@@ -51,6 +51,7 @@ class GameNotifier extends StateNotifier<GameState> {
       currentClueWord: word,
       currentClueNumber: number,
       remainingGuesses: guesses,
+      lastRevealedColor: null, // clear last result when new clue is given
     );
     _logger.i('Clue given: $word : $number. Guesses allowed: $guesses');
   }
@@ -92,12 +93,18 @@ class GameNotifier extends StateNotifier<GameState> {
     Team? winner;
     bool isGameOver = false;
     bool endTurn = false;
+    int newRedScore = state.redScore;
+    int newBlueScore = state.blueScore;
 
     if (card.color == CardColor.assassin) {
       isGameOver = true;
       winner = state.currentTurn == Team.red ? Team.blue : Team.red;
       _logger.i('Assassin revealed! ${winner.name} wins');
     } else {
+      // Update scores: only count cards belonging to each team
+      if (card.color == CardColor.red) newRedScore++;
+      if (card.color == CardColor.blue) newBlueScore++;
+
       final redCards = updatedCards.where((c) => c.color == CardColor.red && c.isRevealed).length;
       final blueCards = updatedCards.where((c) => c.color == CardColor.blue && c.isRevealed).length;
 
@@ -113,10 +120,18 @@ class GameNotifier extends StateNotifier<GameState> {
       } else {
         // Correct color! Decrement guesses
         if (state.remainingGuesses != 99) { // 99 means unlimited
-          state = state.copyWith(remainingGuesses: state.remainingGuesses - 1);
+          state = state.copyWith(
+            remainingGuesses: state.remainingGuesses - 1,
+            redScore: newRedScore,
+            blueScore: newBlueScore,
+            lastRevealedColor: card.color,
+          );
           if (state.remainingGuesses == 0) {
             endTurn = true;
           }
+          _logger.i('Card revealed: ${card.word} (${card.color.name})');
+          if (endTurn && !isGameOver) _switchTurn();
+          return;
         }
       }
     }
@@ -125,6 +140,9 @@ class GameNotifier extends StateNotifier<GameState> {
       cards: updatedCards,
       isGameOver: isGameOver,
       winner: winner,
+      redScore: newRedScore,
+      blueScore: newBlueScore,
+      lastRevealedColor: card.color,
     );
 
     _logger.i('Card revealed: ${card.word} (${card.color.name})');
@@ -134,10 +152,10 @@ class GameNotifier extends StateNotifier<GameState> {
     }
   }
 
-  /// Resets the game
+  /// Resets the game with fresh state (new words, new layout)
   void resetGame() {
     state = _generateInitialState();
-    _logger.i('Game reset');
+    _logger.i('Game reset - new board generated');
   }
 }
 

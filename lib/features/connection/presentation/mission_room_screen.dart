@@ -150,14 +150,20 @@ class _MissionRoomScreenState extends ConsumerState<MissionRoomScreen> {
   Future<void> _launchMission() async {
     if (!widget.isHost) return;
     try {
-      // 1. Generate the source-of-truth randomized game state locally as the Host
+      // 1. CRITICAL: Reset game state to generate fresh random words & layout
+      ref.read(gameProvider.notifier).resetGame();
+      
+      // Small delay to ensure state is updated
+      await Future.delayed(const Duration(milliseconds: 50));
+
+      // 2. Generate the source-of-truth randomized game state locally as the Host
       final initialState = ref.read(gameProvider).toJson();
       final jsonStr = jsonEncode(initialState);
       
-      // 2. Upload it to Appwrite
+      // 3. Upload it to Appwrite
       await ref.read(appwriteRoomServiceProvider).updateGameState(widget.roomId!, jsonStr);
 
-      // 3. Trigger start (updates status to active)
+      // 4. Trigger start (updates status to active)
       await ref.read(appwriteRoomServiceProvider).startGame(widget.roomId!);
     } catch (e) {
       _showSnack('فشل بدء المهمة: $e');
