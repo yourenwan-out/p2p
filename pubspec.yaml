@@ -46,6 +46,20 @@ dev_dependencies:
   build_runner: ^2.4.7
   json_serializable: ^6.7.1
   freezed: ^2.4.6
+  flutter_launcher_icons: ^0.13.1
 
 flutter:
   uses-material-design: true
+
+  assets:
+    - AppIcons/
+
+flutter_launcher_icons:
+  android: "launcher_icon"
+  ios: true
+  image_path: "AppIcons/playstore.png"
+  web:
+    generate: true
+    image_path: "AppIcons/playstore.png"
+    background_color: "#001429"
+    theme_color: "#001429"
