@@ -44,8 +44,9 @@ class GameNotifier extends StateNotifier<GameState> {
   void giveClue(String word, int number) {
     if (state.isGameOver) return;
     
-    // Number + 1 guesses allowed (if number is not 0 or unlimited. Let's use 99 for unlimited, 0 for 0+1=1)
-    int guesses = number == 99 ? 99 : (number + 1);
+    // Official Rules: Number 0 and Infinity (99) both allow unlimited guesses.
+    // Otherwise, guesses = number + 1
+    int guesses = (number == 99 || number == 0) ? 99 : (number + 1);
     
     state = state.copyWith(
       currentClueWord: word,
