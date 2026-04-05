@@ -37,6 +37,13 @@ android {
             signingConfig = signingConfigs.getByName("debug")
         }
     }
+
+    applicationVariants.all {
+        val variant = this
+        variant.outputs.all {
+            (this as com.android.build.gradle.internal.api.BaseVariantOutputImpl).outputFileName = "الأسماء_الرمزية.apk"
+        }
+    }
 }
 
 flutter {
