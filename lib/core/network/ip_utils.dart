@@ -33,7 +33,8 @@ class IPUtils {
   /// Works with Wi-Fi, shared hotspot, and personal hotspot.
   static Future<String?> getIPAddress() async {
     try {
-      final interfaces = await NetworkInterface.list();
+      // Timeout added: NetworkInterface.list can hang indefinitely on some emulators
+      final interfaces = await NetworkInterface.list().timeout(const Duration(seconds: 3));
       String? fallback;
 
       for (final interface in interfaces) {
@@ -49,7 +50,9 @@ class IPUtils {
               !addr.isLoopback &&
               _isRealNetworkIp(addr.address)) {
             if (_isPreferred(addr.address)) {
-              _logger.i('Network IP: ${addr.address} on ${interface.name}');
+              if (Logger.level != Level.off) {
+                _logger.i('Network IP: ${addr.address} on ${interface.name}');
+              }
               return addr.address;
             }
             fallback ??= addr.address;
@@ -58,14 +61,14 @@ class IPUtils {
       }
 
       if (fallback != null) {
-        _logger.w('Using fallback IP: $fallback');
+        if (Logger.level != Level.off) _logger.w('Using fallback IP: $fallback');
         return fallback;
       }
 
-      _logger.w('No suitable IPv4 address found');
+      if (Logger.level != Level.off) _logger.w('No suitable IPv4 address found');
       return null;
     } catch (e) {
-      _logger.e('Error retrieving IP address: $e');
+      if (Logger.level != Level.off) _logger.e('Error retrieving IP: $e');
       return null;
     }
   }

@@ -43,19 +43,29 @@ class _StartScreenState extends ConsumerState<StartScreen> {
   @override
   void initState() {
     super.initState();
-    _settingsBox = Hive.box('settingsBox');
+    if (Hive.isBoxOpen('settingsBox')) {
+      _settingsBox = Hive.box('settingsBox');
+    }
     _loadValues();
     _fetchLocalIP();
     
-    // Initialize Appwrite Anonymous Session
+    // Initialize Appwrite Anonymous Session — non-blocking with timeout
     WidgetsBinding.instance.addPostFrameCallback((_) {
-      ref.read(authServiceProvider).ensureAnonymousSession()
-        .then((_) => _logger.i("Appwrite session verified/created"))
-        .catchError((e) => _logger.e("Appwrite auth failed: $e"));
+      Future.microtask(() async {
+        try {
+          await ref.read(authServiceProvider)
+              .ensureAnonymousSession()
+              .timeout(const Duration(seconds: 8));
+          _logger.i("Appwrite session verified/created");
+        } catch (e) {
+          _logger.w("Appwrite auth skipped (timeout or error): $e");
+        }
+      });
     });
   }
 
   void _loadValues() {
+    if (!Hive.isBoxOpen('settingsBox')) return;
     final lastIP = _settingsBox.get('lastIP');
     if (lastIP != null) _ipController.text = lastIP;
     final lastName = _settingsBox.get('lastName');
@@ -63,6 +73,7 @@ class _StartScreenState extends ConsumerState<StartScreen> {
   }
 
   void _saveData(String? ip, String name) {
+    if (!Hive.isBoxOpen('settingsBox')) return;
     if (ip != null) _settingsBox.put('lastIP', ip);
     _settingsBox.put('lastName', name);
   }
@@ -592,7 +603,7 @@ class _MeshPainter extends CustomPainter {
     final paint = Paint()
       ..color = const Color(0xFF183655).withValues(alpha: 0.4)
       ..strokeWidth = 1;
-    const step = 40.0;
+    const step = 55.0; // increased from 40 to reduce draw calls on large screens
     for (double x = 0; x < size.width; x += step) {
       for (double y = 0; y < size.height; y += step) {
         canvas.drawCircle(Offset(x, y), 1, paint);
