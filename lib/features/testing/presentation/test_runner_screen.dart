@@ -9,6 +9,7 @@ import '../suites/storage_tests.dart';
 import '../suites/edge_case_tests.dart';
 import '../suites/state_tests.dart';
 import '../suites/appwrite_tests.dart';
+import '../suites/startup_tests.dart';
 
 // ─── Design System Colors ─────────────────────────────────────────────────────
 const _surface = Color(0xFF001429);
@@ -47,6 +48,9 @@ const _testDisplayNames = <String, String>{
   'Edge Cases: Rogue Client':    'EDGE_CASES_VOL4 / ROGUE_CLIENT',
   'Appwrite: Client Initialization': 'GLOBAL_NETWORK / CLIENT_INIT',
   'Appwrite: Room Service Injection':'GLOBAL_NETWORK / SERVICE_INJECT',
+  'Startup: Hive initialization':    'STARTUP_CHECKS / HIVE_INIT',
+  'Startup: Network IP fetching':    'STARTUP_CHECKS / NETWORK_INTF',
+  'Startup: Appwrite Anonymous Session': 'STARTUP_CHECKS / APPWRITE_SESS',
 };
 
 // Map internal test names to suite groups for section headers
@@ -70,6 +74,9 @@ const _suiteGroups = <String, String>{
   'Edge Cases: Rogue Client':    'EDGE_CASES_VOL4',
   'Appwrite: Client Initialization': 'GLOBAL_NETWORK',
   'Appwrite: Room Service Injection': 'GLOBAL_NETWORK',
+  'Startup: Hive initialization':    'STARTUP_CHECKS',
+  'Startup: Network IP fetching':    'STARTUP_CHECKS',
+  'Startup: Appwrite Anonymous Session': 'STARTUP_CHECKS',
 };
 
 class TestRunnerScreen extends ConsumerStatefulWidget {
@@ -111,6 +118,9 @@ class _TestRunnerScreenState extends ConsumerState<TestRunnerScreen> {
         TestResult(name: 'Edge Cases: Rogue Client'),
         TestResult(name: 'Appwrite: Client Initialization'),
         TestResult(name: 'Appwrite: Room Service Injection'),
+        TestResult(name: 'Startup: Hive initialization'),
+        TestResult(name: 'Startup: Network IP fetching'),
+        TestResult(name: 'Startup: Appwrite Anonymous Session'),
       ];
     });
   }
@@ -137,6 +147,7 @@ class _TestRunnerScreenState extends ConsumerState<TestRunnerScreen> {
       () => StateTests.run(),
       () => EdgeCaseTests.run(),
       () => AppwriteTests.run(),
+      () => StartupTests.run(),
     ];
 
     for (var suiteFn in suites) {
@@ -280,6 +291,7 @@ class _TestRunnerScreenState extends ConsumerState<TestRunnerScreen> {
       'STATE_MACHINE': _onSurface,
       'EDGE_CASES_VOL4': _primaryContainer,
       'GLOBAL_NETWORK': _secondary,
+      'STARTUP_CHECKS': Colors.purpleAccent,
     };
 
     return Column(
