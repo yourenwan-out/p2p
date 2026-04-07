@@ -6,7 +6,6 @@ import 'package:p2p_codenames/core/network/ip_utils.dart';
 import 'package:p2p_codenames/features/game_board/presentation/game_board_screen.dart';
 import 'package:p2p_codenames/features/game_board/models/player.dart';
 import 'package:p2p_codenames/features/game_board/models/game_state.dart';
-import 'package:p2p_codenames/core/presentation/widgets/custom_bottom_nav.dart';
 import 'package:flutter/services.dart';
 
 // ─── Design System Colors ─────────────────────────────────────────────────────
@@ -175,7 +174,7 @@ class _LobbyScreenState extends ConsumerState<LobbyScreen> {
                 ),
               ],
             ),
-            Positioned(bottom: 0, left: 0, right: 0, child: const CustomBottomNav(currentIndex: 1)),
+            Positioned(bottom: 0, left: 0, right: 0, child: _buildBottomNav()),
           ],
         ),
       ),
@@ -607,5 +606,45 @@ class _LobbyScreenState extends ConsumerState<LobbyScreen> {
     );
   }
 
+  Widget _buildBottomNav() {
+    return Container(
+      decoration: BoxDecoration(
+        color: _surfaceContainerLow.withValues(alpha: 0.95),
+        borderRadius: const BorderRadius.vertical(top: Radius.circular(20)),
+        border: Border(top: BorderSide(color: _outlineVariant.withValues(alpha: 0.12))),
+        boxShadow: [BoxShadow(color: Colors.black.withValues(alpha: 0.3), blurRadius: 24, offset: const Offset(0, -8))],
+      ),
+      child: SafeArea(
+        top: false,
+        child: Padding(
+          padding: const EdgeInsets.symmetric(horizontal: 16, vertical: 8),
+          child: Row(
+            mainAxisAlignment: MainAxisAlignment.spaceAround,
+            children: [
+              _navItem(Icons.login, 'الإنضمام', false),
+              _navItem(Icons.groups, 'الفريق', true),
+              _navItem(Icons.grid_view, 'المهمة', false),
+              _navItem(Icons.terminal, 'LOGS', false),
+            ],
+          ),
+        ),
+      ),
+    );
+  }
 
+  Widget _navItem(IconData icon, String label, bool active) {
+    return Container(
+      padding: const EdgeInsets.symmetric(horizontal: 14, vertical: 6),
+      decoration: active ? BoxDecoration(
+        color: _surfaceContainerHighest,
+        borderRadius: BorderRadius.circular(12)) : null,
+      child: Column(mainAxisSize: MainAxisSize.min, children: [
+        Icon(icon, color: active ? _primary : _outlineVariant, size: 22),
+        const SizedBox(height: 2),
+        Text(label, style: GoogleFonts.spaceGrotesk(
+          color: active ? _primary : _outlineVariant.withValues(alpha: 0.7),
+          fontSize: 10, fontWeight: FontWeight.w600)),
+      ]),
+    );
+  }
 }

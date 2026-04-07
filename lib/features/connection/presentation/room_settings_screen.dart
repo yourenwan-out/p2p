@@ -8,7 +8,6 @@ import 'package:appwrite/appwrite.dart';
 
 import '../../../../core/appwrite/appwrite_providers.dart';
 import '../../../../core/appwrite/appwrite_room_service.dart';
-import 'package:p2p_codenames/core/presentation/widgets/custom_bottom_nav.dart';
 import 'mission_room_screen.dart';
 
 const _surface = Color(0xFF001429);
@@ -148,7 +147,7 @@ class _RoomSettingsScreenState extends ConsumerState<RoomSettingsScreen> {
             ],
           ),
           
-          Positioned(bottom: 0, left: 0, right: 0, child: const CustomBottomNav(currentIndex: 2)),
+          Positioned(bottom: 0, left: 0, right: 0, child: _buildBottomNav()),
         ],
       ),
     );
@@ -412,7 +411,47 @@ class _RoomSettingsScreenState extends ConsumerState<RoomSettingsScreen> {
     );
   }
 
+  Widget _buildBottomNav() {
+    return Container(
+      decoration: BoxDecoration(
+        color: _surface.withValues(alpha: 0.95),
+        borderRadius: const BorderRadius.vertical(top: Radius.circular(20)),
+        border: Border(top: BorderSide(color: _outlineVariant.withValues(alpha: 0.12))),
+        boxShadow: [BoxShadow(color: Colors.black.withValues(alpha: 0.3), blurRadius: 24, offset: const Offset(0, -8))],
+      ),
+      child: SafeArea(
+        top: false,
+        child: Padding(
+          padding: const EdgeInsets.symmetric(horizontal: 16, vertical: 8),
+          child: Row(
+            mainAxisAlignment: MainAxisAlignment.spaceAround,
+            children: [
+              _navItem(icon: Icons.login, label: 'الإنضمام', active: false),
+              _navItem(icon: Icons.groups, label: 'الفريق', active: false),
+              _navItem(icon: Icons.assignment, label: 'المهمة', active: true),
+              _navItem(icon: Icons.history, label: 'LOGS', active: false),
+            ],
+          ),
+        ),
+      ),
+    );
+  }
 
+  Widget _navItem({required IconData icon, required String label, required bool active}) {
+    return Container(
+      padding: const EdgeInsets.symmetric(horizontal: 16, vertical: 6),
+      decoration: active ? BoxDecoration(
+        color: _surfaceContainerHighest,
+        borderRadius: BorderRadius.circular(12)) : null,
+      child: Column(mainAxisSize: MainAxisSize.min, children: [
+        Icon(icon, color: active ? _primary : _outlineVariant, size: 22),
+        const SizedBox(height: 4),
+        Text(label, style: GoogleFonts.notoSansArabic(
+          color: active ? _primary : _outlineVariant.withValues(alpha: 0.7),
+          fontSize: 10, fontWeight: FontWeight.w600)),
+      ]),
+    );
+  }
 }
 
 class _TeamCountButton extends StatelessWidget {
