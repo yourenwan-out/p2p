@@ -6,6 +6,7 @@ import 'package:hive_flutter/hive_flutter.dart';
 
 import '../../../../core/appwrite/appwrite_providers.dart';
 import '../../../../core/appwrite/appwrite_room_service.dart';
+import '../../../../core/presentation/widgets/custom_bottom_nav.dart';
 import 'mission_room_screen.dart';
 
 // ─── Design System Colors ────────────────────────────────────────────────────
@@ -155,7 +156,7 @@ class _PublicRoomsScreenState extends ConsumerState<PublicRoomsScreen> {
             ],
           ),
           
-          Positioned(bottom: 0, left: 0, right: 0, child: _buildBottomNav()),
+          Positioned(bottom: 0, left: 0, right: 0, child: const CustomBottomNav(currentIndex: 0)),
         ],
       ),
     );
@@ -212,7 +213,7 @@ class _PublicRoomsScreenState extends ConsumerState<PublicRoomsScreen> {
         borderRadius: BorderRadius.circular(20),
         color: _surfaceContainerLow,
         image: const DecorationImage(
-          image: NetworkImage('https://via.placeholder.com/600x400/001D36/001D36'),
+          image: AssetImage('assets/images/header_bg.png'),
           fit: BoxFit.cover,
         ),
         border: Border.all(color: _primary.withValues(alpha: 0.1)),
@@ -391,47 +392,7 @@ class _PublicRoomsScreenState extends ConsumerState<PublicRoomsScreen> {
     );
   }
 
-  Widget _buildBottomNav() {
-    return Container(
-      decoration: BoxDecoration(
-        color: _surface.withValues(alpha: 0.95),
-        borderRadius: const BorderRadius.vertical(top: Radius.circular(20)),
-        border: Border(top: BorderSide(color: _outlineVariant.withValues(alpha: 0.12))),
-        boxShadow: [BoxShadow(color: Colors.black.withValues(alpha: 0.3), blurRadius: 24, offset: const Offset(0, -8))],
-      ),
-      child: SafeArea(
-        top: false,
-        child: Padding(
-          padding: const EdgeInsets.symmetric(horizontal: 16, vertical: 8),
-          child: Row(
-            mainAxisAlignment: MainAxisAlignment.spaceAround,
-            children: [
-              _navItem(icon: Icons.login, label: 'الإنضمام', active: true),
-              _navItem(icon: Icons.groups, label: 'الفريق', active: false),
-              _navItem(icon: Icons.assignment, label: 'المهمة', active: false),
-              _navItem(icon: Icons.history, label: 'LOGS', active: false),
-            ],
-          ),
-        ),
-      ),
-    );
-  }
 
-  Widget _navItem({required IconData icon, required String label, required bool active}) {
-    return Container(
-      padding: const EdgeInsets.symmetric(horizontal: 16, vertical: 6),
-      decoration: active ? BoxDecoration(
-        color: _surfaceContainerHighest,
-        borderRadius: BorderRadius.circular(12)) : null,
-      child: Column(mainAxisSize: MainAxisSize.min, children: [
-        Icon(icon, color: active ? _primary : _outlineVariant, size: 22),
-        const SizedBox(height: 4),
-        Text(label, style: GoogleFonts.notoSansArabic(
-          color: active ? _primary : _outlineVariant.withValues(alpha: 0.7),
-          fontSize: 10, fontWeight: FontWeight.w600)),
-      ]),
-    );
-  }
 }
 
 class _RoomItem extends StatelessWidget {
