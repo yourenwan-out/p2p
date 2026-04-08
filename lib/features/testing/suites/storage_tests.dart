@@ -1,4 +1,5 @@
 import 'package:hive/hive.dart';
+import 'package:hive_flutter/hive_flutter.dart';
 import '../models/test_result.dart';
 
 class StorageTests {
@@ -12,6 +13,7 @@ class StorageTests {
   static Future<TestResult> _testHiveSaveLoad() async {
     final startTime = DateTime.now();
     try {
+      try { await Hive.initFlutter(); } catch (_) {}
       final box = await Hive.openBox('testBox');
       const testIP = '192.168.1.50';
       
@@ -37,6 +39,7 @@ class StorageTests {
   static Future<TestResult> _testErrorRecovery() async {
     final startTime = DateTime.now();
     try {
+      try { await Hive.initFlutter(); } catch (_) {}
       final box = await Hive.openBox('recoveryTestBox');
       
       // Try to read a non-existent key with dynamic default

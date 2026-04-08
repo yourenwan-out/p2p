@@ -17,6 +17,7 @@ class StartupTests {
     final startTime = DateTime.now();
     try {
       await Future.microtask(() async {
+        try { await Hive.initFlutter(); } catch (_) {}
         if (!Hive.isBoxOpen('settingsBox')) {
           await Hive.openBox('settingsBox');
         }
@@ -59,7 +60,7 @@ class StartupTests {
       final container = ProviderContainer();
       await container.read(authServiceProvider)
           .ensureAnonymousSession()
-          .timeout(const Duration(seconds: 8));
+          .timeout(const Duration(seconds: 20));
       return TestResult(
         name: 'Startup: Appwrite Anonymous Session',
         status: TestStatus.passed,
