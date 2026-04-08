@@ -42,7 +42,6 @@ class MyApp extends StatelessWidget {
         return MaterialApp(
           title: 'الأسماء السرية',
           debugShowCheckedModeBanner: false,
-          backgroundColor: const Color(0xFF001429),
           theme: ThemeData(
             primarySwatch: Colors.blue,
             scaffoldBackgroundColor: const Color(0xFF001429),
