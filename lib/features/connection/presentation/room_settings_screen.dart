@@ -43,7 +43,10 @@ class _RoomSettingsScreenState extends ConsumerState<RoomSettingsScreen> {
   void initState() {
     super.initState();
     _roomCode = _generateRoomCode();
-    final lastName = Hive.box('settingsBox').get('lastName', defaultValue: 'العميل');
+    // Guard: Hive may not be initialized if startup failed
+    final lastName = Hive.isBoxOpen('settingsBox')
+        ? Hive.box('settingsBox').get('lastName', defaultValue: 'العميل')
+        : 'العميل';
     _roomNameController.text = 'غرفة $lastName';
   }
 
@@ -73,10 +76,22 @@ class _RoomSettingsScreenState extends ConsumerState<RoomSettingsScreen> {
     setState(() => _isLoading = true);
 
     try {
+      // Re-attempt session in case startup background attempt timed out
+      await ref
+          .read(authServiceProvider)
+          .ensureAnonymousSession()
+          .timeout(const Duration(seconds: 12));
+
       final account = ref.read(appwriteAccountProvider);
       final user = await account.get();
       final hostId = user.$id;
-      final hostName = Hive.box('settingsBox').get('lastName', defaultValue: 'Unknown');
+
+      // Guard: Hive may not be initialized if startup failed
+      final hostName = Hive.isBoxOpen('settingsBox')
+          ? Hive.box('settingsBox').get('lastName', defaultValue: 'Unknown')
+          : _roomNameController.text.trim().isNotEmpty
+              ? _roomNameController.text.trim()
+              : 'Unknown';
 
       final roomService = ref.read(appwriteRoomServiceProvider);
       
