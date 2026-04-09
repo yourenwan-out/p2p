@@ -65,11 +65,14 @@ class _StartScreenState extends ConsumerState<StartScreen> {
   }
 
   void _loadValues() {
-    if (!Hive.isBoxOpen('settingsBox')) return;
+    if (!Hive.isBoxOpen('settingsBox')) {
+      _nameController.text = 'العميل';
+      return;
+    }
     final lastIP = _settingsBox.get('lastIP');
     if (lastIP != null) _ipController.text = lastIP;
     final lastName = _settingsBox.get('lastName');
-    if (lastName != null) _nameController.text = lastName;
+    _nameController.text = lastName ?? 'العميل';
   }
 
   void _saveData(String? ip, String name) {
