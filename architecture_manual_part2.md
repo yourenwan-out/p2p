@@ -25,12 +25,13 @@ TextEditingController _roomNameController; // اسم الغرفة
 
 **`_handleCreateAndJoin()`** — الدالة الرئيسية:
 ```
-1. التحقق: عدد اللاعبين الكلي >= 2
-2. التحقق: اسم الغرفة غير فارغ
-3. جلب هوية المستخدم من Appwrite Account
-4. قراءة اسم المضيف من Hive settingsBox
-5. استدعاء roomService.createRoom(...)
-6. الانتقال فوراً لـ MissionRoomScreen(isHost: true)
+ 1. التحقق: عدد اللاعبين الكلي >= 2
+ 2. التحقق: اسم الغرفة غير فارغ
+ 3. إعادة محاولة تأكيد جلسة Appwrite المجهولة (في حال فشلها أثناء بدء التطبيق)
+ 4. جلب هوية المستخدم من Appwrite Account
+ 5. قراءة اسم المضيف من Hive (أو استخدام الاسم المُدخل إذا فشل Hive)
+ 6. استدعاء roomService.createRoom(...)
+ 7. الانتقال فوراً لـ MissionRoomScreen(isHost: true)
 ```
 
 **ما يُمرَّر لـ Appwrite عند الإنشاء:**
@@ -229,7 +230,15 @@ static const String databaseId        = 'YOUR_DATABASE_ID';
 static const String roomsCollectionId = 'rooms'; // أو أي اسم تختاره
 ```
 
-### الخطوة 3 — بنية الـ Collection في لوحة Appwrite
+### الخطوة 3 — تسجيل خادم Android (Origin)
+لضمان عدم رفض الاتصال بخطأ `Invalid Origin (403)`:
+1. في قائمة مشاريع Appwrite، اذهب إلى المشهد الرئيسي (Overview).
+2. تحت `Platforms`، اضغط `Add Platform` واختر `Android`.
+3. اكتب **الاسم**: الأسماء الرمزية.
+4. اكتب **Package Name**: `com.example.p2p_codenames`  (هذا ما يبحث عنه الخادم).
+5. قم بحفظ التعديلات (لا داعي لخطوات إضافية بالـ SDK هنا لأننا برمجناها بالفعل).
+
+### الخطوة 4 — بنية الـ Collection في لوحة Appwrite
 
 قم بإنشاء Collection باسم `rooms` بالحقول التالية:
 

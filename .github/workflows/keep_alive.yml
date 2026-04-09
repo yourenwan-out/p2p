@@ -1,0 +1,102 @@
+name: 🔋 Appwrite Keep-Alive Heartbeat
+
+# ─── الهدف: إرسال طلب API كل 3 أيام لمنع Appwrite من إيقاف المشروع ───────────
+# Appwrite يوقف المشروعات التي لا تتلقى أي طلبات لمدة 7 أيام متواصلة.
+# هذا الـ Workflow يرسل نبضة (heartbeat) خفيفة كل 3 أيام.
+on:
+  schedule:
+    # يعمل كل 3 أيام في تمام الساعة 3:00 صباحاً UTC
+    - cron: '0 3 */3 * *'
+  workflow_dispatch:
+    # يسمح بالتشغيل اليدوي من واجهة GitHub للاختبار
+
+jobs:
+  ping_appwrite:
+    name: 🏥 Send Heartbeat to Appwrite
+    runs-on: ubuntu-latest
+    timeout-minutes: 5
+
+    steps:
+      # ── الخطوة 1: التحقق من صحة الخادم (لا يحتاج API Key) ──────────────────
+      - name: 📡 Ping Appwrite Health Endpoint
+        run: |
+          echo "━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━"
+          echo "🕐 Time (UTC): $(date -u '+%Y-%m-%d %H:%M:%S')"
+          echo "🎯 Target: https://fra.cloud.appwrite.io/v1/health/version"
+          echo "━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━"
+
+          HTTP_CODE=$(curl --silent \
+            --output /tmp/health_response.json \
+            --write-out "%{http_code}" \
+            --max-time 15 \
+            --retry 3 \
+            --retry-delay 5 \
+            -X GET "https://fra.cloud.appwrite.io/v1/health/version" \
+            -H "x-appwrite-project: 69cc14ce000d6ee3e15b")
+
+          echo "📊 HTTP Status: $HTTP_CODE"
+
+          if [ "$HTTP_CODE" -ge 200 ] && [ "$HTTP_CODE" -lt 300 ]; then
+            echo "✅ Health check PASSED — Appwrite is alive!"
+            cat /tmp/health_response.json 2>/dev/null || true
+          else
+            echo "❌ Health check FAILED — HTTP: $HTTP_CODE"
+            cat /tmp/health_response.json 2>/dev/null || true
+            exit 1
+          fi
+
+      # ── الخطوة 2: استعلام قاعدة البيانات (يُسجَّل كنشاط حقيقي) ────────────
+      # هذا هو الأهم: يُثبت للـ Appwrite أن المشروع "نشط" بقراءة من Database
+      - name: 📦 Query Database (Rooms Collection)
+        env:
+          APPWRITE_API_KEY: ${{ secrets.APPWRITE_API_KEY }}
+        run: |
+          echo "━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━"
+          echo "🗄️  Querying: databases/69ccd7f90036a2e58f2c/collections/rooms"
+          echo "━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━"
+
+          HTTP_CODE=$(curl --silent \
+            --output /tmp/db_response.json \
+            --write-out "%{http_code}" \
+            --max-time 15 \
+            --retry 3 \
+            --retry-delay 5 \
+            -X GET "https://fra.cloud.appwrite.io/v1/databases/69ccd7f90036a2e58f2c/collections/rooms/documents?queries%5B%5D=limit(1)" \
+            -H "x-appwrite-project: 69cc14ce000d6ee3e15b" \
+            -H "x-appwrite-key: ${APPWRITE_API_KEY}")
+
+          echo "📊 HTTP Status: $HTTP_CODE"
+
+          if [ "$HTTP_CODE" -ge 200 ] && [ "$HTTP_CODE" -lt 300 ]; then
+            echo "✅ Database query PASSED — Project is active!"
+            # استخراج عدد الغرف الموجودة (إن وُجدت)
+            python3 -c "
+          import json, sys
+          try:
+            data = json.load(open('/tmp/db_response.json'))
+            total = data.get('total', 0)
+            print(f'📁 Current rooms in DB: {total}')
+          except Exception as e:
+            print(f'ℹ️  Could not parse response: {e}')
+          " || true
+          elif [ "$HTTP_CODE" = "401" ]; then
+            echo "⚠️  DB query returned 401 — Check APPWRITE_API_KEY secret in GitHub Settings"
+            echo "    Go to: Repo Settings → Secrets → Actions → APPWRITE_API_KEY"
+            # لا نوقف الـ workflow لأن الخطوة الأولى نجحت بالفعل
+          elif [ "$HTTP_CODE" = "403" ]; then
+            echo "⚠️  DB query returned 403 — API Key may lack database read permissions"
+            echo "    Make sure the key has: databases.read + documents.read"
+          else
+            echo "⚠️  DB query returned: $HTTP_CODE"
+            cat /tmp/db_response.json 2>/dev/null || true
+          fi
+
+      # ── الخطوة 3: ملخص النتيجة ─────────────────────────────────────────────
+      - name: 📋 Summary
+        if: always()
+        run: |
+          echo "━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━"
+          echo "🔋 Heartbeat complete at $(date -u '+%Y-%m-%d %H:%M:%S UTC')"
+          echo "🗓️  Next heartbeat: in ~3 days"
+          echo "📌 Project: 69cc14ce000d6ee3e15b @ fra.cloud.appwrite.io"
+          echo "━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━"

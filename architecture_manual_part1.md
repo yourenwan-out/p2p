@@ -171,7 +171,8 @@ const String appwriteEndpoint  = 'https://fra.cloud.appwrite.io/v1';
 **دالة `AuthService.ensureAnonymousSession()`:**
 ```
 إذا كان المستخدم مسجلاً → لا تفعل شيئاً
-إذا لم يكن مسجلاً (خطأ 401) → أنشئ جلسة مجهولة تلقائياً
+إذا لم يكن مسجلاً → أنشئ جلسة مجهولة تلقائياً
+خطأ 403 (Invalid Origin) → يجب إضافة com.example.p2p_codenames لمنصة Android في Appwrite!
 أي خطأ آخر → أعد رميه للمعالجة في الأعلى
 ```
 
@@ -379,7 +380,7 @@ disconnect()
 ### `start_screen.dart` — الشاشة الرئيسية
 
 **ماذا يحدث عند فتح الشاشة (`initState`):**
-1. تحميل آخر IP واسم من Hive (`_loadValues`)
+1. تحميل آخر IP واسم من Hive (`_loadValues`). في حال فشل Hive (مثلاً بسبب Timeout)، يتم تعيين الاسم الافتراضي إلى "العميل" لمنع تعليق المستخدم في واجهة الإدخال.
 2. جلب IP المحلي (`_fetchLocalIP`)
 3. بدء جلسة Appwrite المجهولة بشكل **غير متزامن وغير محجوب** بـ timeout 8 ثوانٍ
 
