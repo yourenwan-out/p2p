@@ -4,6 +4,8 @@ name: 🔋 Appwrite Keep-Alive Heartbeat
 # Appwrite يوقف المشروعات التي لا تتلقى أي طلبات لمدة 7 أيام متواصلة.
 # هذا الـ Workflow يرسل نبضة (heartbeat) خفيفة كل 3 أيام.
 on:
+  push:
+    branches: [ lan_play ]
   schedule:
     # يعمل كل 3 أيام في تمام الساعة 3:00 صباحاً UTC
     - cron: '0 3 */3 * *'
