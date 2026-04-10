@@ -70,12 +70,14 @@ class _CustomWordsSelectorState extends ConsumerState<CustomWordsSelector> {
         File file = File(result.files.single.path!);
         String contents = await file.readAsString();
         _controller.text = contents;
+        if (!mounted) return;
         ScaffoldMessenger.of(context).showSnackBar(SnackBar(
           content: Text('تم استيراد الكلمات بنجاح', style: GoogleFonts.notoSansArabic()),
           backgroundColor: Colors.green,
         ));
       }
     } catch (e) {
+      if (!mounted) return;
       ScaffoldMessenger.of(context).showSnackBar(SnackBar(
         content: Text('فشل قراءة الملف: $e', style: GoogleFonts.notoSansArabic()),
         backgroundColor: Colors.redAccent,
@@ -88,9 +90,9 @@ class _CustomWordsSelectorState extends ConsumerState<CustomWordsSelector> {
     return Container(
       padding: const EdgeInsets.all(16),
       decoration: BoxDecoration(
-        color: _surfaceContainerLowest.withOpacity(0.5),
+        color: _surfaceContainerLowest.withValues(alpha: 0.5),
         borderRadius: BorderRadius.circular(14),
-        border: Border.all(color: _outlineVariant.withOpacity(0.12)),
+        border: Border.all(color: _outlineVariant.withValues(alpha: 0.12)),
       ),
       child: Column(
         crossAxisAlignment: CrossAxisAlignment.start,
@@ -111,9 +113,9 @@ class _CustomWordsSelectorState extends ConsumerState<CustomWordsSelector> {
                 child: Container(
                   padding: const EdgeInsets.symmetric(horizontal: 8, vertical: 4),
                   decoration: BoxDecoration(
-                    color: _secondary.withOpacity(0.2),
+                    color: _secondary.withValues(alpha: 0.2),
                     borderRadius: BorderRadius.circular(6),
-                    border: Border.all(color: _secondary.withOpacity(0.5)),
+                    border: Border.all(color: _secondary.withValues(alpha: 0.5)),
                   ),
                   child: Row(
                     children: [
@@ -133,16 +135,16 @@ class _CustomWordsSelectorState extends ConsumerState<CustomWordsSelector> {
             style: GoogleFonts.notoSansArabic(color: _onSurface, fontSize: 13),
             decoration: InputDecoration(
               hintText: 'اكتب الكلمات هنا، افصل بينها بمسافة، فاصلة أو سطر جديد...',
-              hintStyle: GoogleFonts.notoSansArabic(color: _onSurfaceVariant.withOpacity(0.5), fontSize: 12),
+              hintStyle: GoogleFonts.notoSansArabic(color: _onSurfaceVariant.withValues(alpha: 0.5), fontSize: 12),
               filled: true,
-              fillColor: Colors.black.withOpacity(0.2),
+              fillColor: Colors.black.withValues(alpha: 0.2),
               border: OutlineInputBorder(
                 borderRadius: BorderRadius.circular(8),
-                borderSide: BorderSide(color: _outlineVariant.withOpacity(0.3)),
+                borderSide: BorderSide(color: _outlineVariant.withValues(alpha: 0.3)),
               ),
               enabledBorder: OutlineInputBorder(
                 borderRadius: BorderRadius.circular(8),
-                borderSide: BorderSide(color: _outlineVariant.withOpacity(0.3)),
+                borderSide: BorderSide(color: _outlineVariant.withValues(alpha: 0.3)),
               ),
               focusedBorder: OutlineInputBorder(
                 borderRadius: BorderRadius.circular(8),
