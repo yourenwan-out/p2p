@@ -13,6 +13,7 @@ import 'package:p2p_codenames/features/game_board/providers/game_provider.dart';
 import 'package:p2p_codenames/features/game_board/models/player.dart';
 import 'package:p2p_codenames/features/game_board/models/game_state.dart';
 import 'package:p2p_codenames/features/game_board/presentation/game_board_screen.dart';
+import 'package:p2p_codenames/features/game_board/providers/custom_words_provider.dart';
 
 const _surface = Color(0xFF001429);
 const _surfaceContainerLow = Color(0xFF001D36);
@@ -151,7 +152,8 @@ class _MissionRoomScreenState extends ConsumerState<MissionRoomScreen> {
     if (!widget.isHost) return;
     try {
       // 1. CRITICAL: Reset game state to generate fresh random words & layout
-      ref.read(gameProvider.notifier).resetGame();
+      final customWords = ref.read(customWordsProvider);
+      ref.read(gameProvider.notifier).resetGame(customWords: customWords);
       
       // Small delay to ensure state is updated
       await Future.delayed(const Duration(milliseconds: 50));

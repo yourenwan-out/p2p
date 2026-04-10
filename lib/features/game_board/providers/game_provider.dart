@@ -17,9 +17,24 @@ class GameNotifier extends StateNotifier<GameState> {
   }
 
   /// Generates initial game state
-  static GameState _generateInitialState() {
+  static GameState _generateInitialState({List<String>? customWords}) {
     final random = Random();
-    final shuffledWords = WordDatabase.arabicWords.toList()..shuffle(random);
+    List<String> shuffledWords;
+    
+    if (customWords != null && customWords.isNotEmpty) {
+      if (customWords.length < 25) {
+        final defaultWords = WordDatabase.arabicWords.toList()..shuffle(random);
+        // Exclude already provided words
+        final needed = 25 - customWords.length;
+        final remainingDefaults = defaultWords.where((w) => !customWords.contains(w)).take(needed).toList();
+        final mixedWords = [...customWords, ...remainingDefaults];
+        shuffledWords = mixedWords.toList()..shuffle(random);
+      } else {
+        shuffledWords = customWords.toList()..shuffle(random);
+      }
+    } else {
+      shuffledWords = WordDatabase.arabicWords.toList()..shuffle(random);
+    }
 
     final colors = <CardColor>[];
     colors.addAll(List.filled(9, CardColor.red));
@@ -154,8 +169,8 @@ class GameNotifier extends StateNotifier<GameState> {
   }
 
   /// Resets the game with fresh state (new words, new layout)
-  void resetGame() {
-    state = _generateInitialState();
+  void resetGame({List<String>? customWords}) {
+    state = _generateInitialState(customWords: customWords);
     _logger.i('Game reset - new board generated');
   }
 }

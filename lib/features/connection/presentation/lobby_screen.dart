@@ -6,6 +6,9 @@ import 'package:p2p_codenames/core/network/ip_utils.dart';
 import 'package:p2p_codenames/features/game_board/presentation/game_board_screen.dart';
 import 'package:p2p_codenames/features/game_board/models/player.dart';
 import 'package:p2p_codenames/features/game_board/models/game_state.dart';
+import 'package:p2p_codenames/features/game_board/providers/game_provider.dart';
+import 'package:p2p_codenames/features/game_board/providers/custom_words_provider.dart';
+import 'package:p2p_codenames/features/connection/presentation/widgets/custom_words_selector.dart';
 import 'package:flutter/services.dart';
 
 // ─── Design System Colors ─────────────────────────────────────────────────────
@@ -58,6 +61,11 @@ class _LobbyScreenState extends ConsumerState<LobbyScreen> {
       _showSnack('يجب أن يكون لكل فريق رئيس شبكة واحد على الأقل');
       return;
     }
+    
+    // CRITICAL: Reset the game locally before starting LAN game to generate custom words layout
+    final customWords = ref.read(customWordsProvider);
+    ref.read(gameProvider.notifier).resetGame(customWords: customWords);
+
     ref.read(connectionProvider.notifier).startGame();
   }
 
@@ -154,10 +162,12 @@ class _LobbyScreenState extends ConsumerState<LobbyScreen> {
                           if (localPlayer != null)
                             _buildSettingsCard(localPlayer, connectionState, hasRedSpy, hasBluespy),
                           const SizedBox(height: 20),
-                          // Start button or waiting
-                          if (connectionState.isHost)
+                          // Custom words before launching (Host only)
+                          if (connectionState.isHost) ...[
+                            const CustomWordsSelector(),
+                            const SizedBox(height: 20),
                             _buildLaunchSection(connectionState, hasEnough, hasRedSpy, hasBluespy)
-                          else
+                          ] else
                             _buildWaitingMessage(),
                           if (connectionState.error != null)
                             Padding(

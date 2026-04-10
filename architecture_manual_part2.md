@@ -104,6 +104,7 @@ ref.listen<ConnectionState>(connectionProvider, (previous, next) {
 1. عدد اللاعبين >= 4
 2. الفريق الأحمر لديه spymaster واحد على الأقل
 3. الفريق الأزرق لديه spymaster واحد على الأقل
+4. [مرحلة حقن الكلمات] يقوم المضيف بقراءة customWordsProvider لبدء لعبة بكلمات مخصصة عبر الدالة `resetGame(customWords)`.
 → استدعاء connectionProvider.startGame()
   → يُرسل START_GAME لجميع العملاء عبر TCP
   → يضبط isGameStarted = true

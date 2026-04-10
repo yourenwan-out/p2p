@@ -10,6 +10,7 @@ import '../suites/edge_case_tests.dart';
 import '../suites/state_tests.dart';
 import '../suites/appwrite_tests.dart';
 import '../suites/startup_tests.dart';
+import '../suites/custom_words_tests.dart';
 
 // ─── Design System Colors ─────────────────────────────────────────────────────
 const _surface = Color(0xFF001429);
@@ -35,6 +36,9 @@ const _testDisplayNames = <String, String>{
   'Engine: N+1 Rule':            'SYSTEM_ENGINE_CORE / N_PLUS_ONE_RULE',
   'Engine: Win/Loss Conditions': 'SYSTEM_ENGINE_CORE / WIN_CONDITION',
   'Engine: Reset Game':          'SYSTEM_ENGINE_CORE / RESET',
+  'Custom Words: Exact 25 Words': 'SYSTEM_ENGINE_CORE / CUST_W_EXACT',
+  'Custom Words: Too Few Words (Padding)': 'SYSTEM_ENGINE_CORE / CUST_W_PAD',
+  'Custom Words: Too Many Words (Trimming)': 'SYSTEM_ENGINE_CORE / CUST_W_TRIM',
   'Network: Host Lifecycle':     'P2P_NETWORK / HOST_LIFECYCLE',
   'Network: Client Lifecycle':   'P2P_NETWORK / CLIENT_LIFECYCLE',
   'Network: Serialization':      'P2P_NETWORK / SERIALIZATION',
@@ -61,6 +65,9 @@ const _suiteGroups = <String, String>{
   'Engine: N+1 Rule':            'SYSTEM_ENGINE_CORE',
   'Engine: Win/Loss Conditions': 'SYSTEM_ENGINE_CORE',
   'Engine: Reset Game':          'SYSTEM_ENGINE_CORE',
+  'Custom Words: Exact 25 Words': 'SYSTEM_ENGINE_CORE',
+  'Custom Words: Too Few Words (Padding)': 'SYSTEM_ENGINE_CORE',
+  'Custom Words: Too Many Words (Trimming)': 'SYSTEM_ENGINE_CORE',
   'Network: Host Lifecycle':     'P2P_NETWORK',
   'Network: Client Lifecycle':   'P2P_NETWORK',
   'Network: Serialization':      'P2P_NETWORK',
@@ -105,6 +112,9 @@ class _TestRunnerScreenState extends ConsumerState<TestRunnerScreen> {
         TestResult(name: 'Engine: N+1 Rule'),
         TestResult(name: 'Engine: Win/Loss Conditions'),
         TestResult(name: 'Engine: Reset Game'),
+        TestResult(name: 'Custom Words: Exact 25 Words'),
+        TestResult(name: 'Custom Words: Too Few Words (Padding)'),
+        TestResult(name: 'Custom Words: Too Many Words (Trimming)'),
         TestResult(name: 'Network: Host Lifecycle'),
         TestResult(name: 'Network: Client Lifecycle'),
         TestResult(name: 'Network: Serialization'),
@@ -148,6 +158,7 @@ class _TestRunnerScreenState extends ConsumerState<TestRunnerScreen> {
       () => EdgeCaseTests.run(),
       () => AppwriteTests.run(),
       () => StartupTests.run(),
+      () => CustomWordsTests.run(),
     ];
 
     for (var suiteFn in suites) {

@@ -35,6 +35,9 @@
 | **Google Fonts** | الخطوط | SpaceGrotesk + NotoSansArabic |
 | **logger** | تسجيل أحداث التشغيل | معطّل في release لمنع ANR |
 
+- **`connectionProvider`:** يدير حالة الاتصال (`ConnectionState`) للعملاء والمضيفين في الوضع المحلي (LAN) والعالمي (Appwrite). يدير الاتصال بالـ Sockets في الـ LAN واشتراكات الـ Realtime بالشبكة العالمية.
+- **`customWordsProvider`:** `StateProvider<List<String>?>` بسيط يخزن قائمة الكلمات المخصصة التي يدخلها المضيف عبر واجهة اختيار الكلمات (أو يرفعها عبر ملف) حتى موعد بدء اللعبة حيث يتم تمريرها إلى `gameProvider.resetGame(customWords)`.
+
 ### المعمارية المتبعة: Feature-First
 
 ```

@@ -9,6 +9,7 @@ import 'package:appwrite/appwrite.dart';
 import '../../../../core/appwrite/appwrite_providers.dart';
 import '../../../../core/appwrite/appwrite_room_service.dart';
 import 'mission_room_screen.dart';
+import 'widgets/custom_words_selector.dart';
 
 const _surface = Color(0xFF001429);
 const _surfaceContainerLow = Color(0xFF001D36);
@@ -153,7 +154,9 @@ class _RoomSettingsScreenState extends ConsumerState<RoomSettingsScreen> {
                     _buildRoomNameInput(),
                     const SizedBox(height: 24),
                     _buildPrivacySection(),
-                    const SizedBox(height: 48),
+                    const SizedBox(height: 32),
+                    const CustomWordsSelector(),
+                    const SizedBox(height: 32),
                     _buildConfirmButton(),
                     const SizedBox(height: 100), // Bottom nav padding
                   ],

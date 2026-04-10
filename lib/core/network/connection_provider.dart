@@ -79,8 +79,10 @@ class ConnectionNotifier extends StateNotifier<ConnectionState> {
   void joinAppwriteGame(String localId, List<Player> initialPlayers, bool isHost, String roomId) {
     disconnect();
 
-    // CRITICAL: Reset game board before joining — prevents stale old board from showing
-    ref.read(gameProvider.notifier).resetGame();
+    // CRITICAL: Reset game board before joining for clients — prevents stale old board from showing
+    if (!isHost) {
+      ref.read(gameProvider.notifier).resetGame();
+    }
 
     state = state.copyWith(
       isConnected: true,
